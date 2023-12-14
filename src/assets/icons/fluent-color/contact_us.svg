@@ -1,0 +1,25 @@
+<svg height="16" viewBox="0 0 48 48" width="16" xmlns="http://www.w3.org/2000/svg">
+  <path d="M10 31h28v12H10z" fill="#0078d4"/>
+  <path d="M14 9h20V7a2 2 0 0 0-2-2H16a2 2 0 0 0-2 2v2zm-4 2v20h28V11H10z" fill="#199be2"/>
+  <path d="M30 35h4v4h-4zm-9 0h7v8h-7z" fill="#005094"/>
+  <path d="M30 23h4v4h-4zm-8 0h4v4h-4zm-8-8h4v4h-4zm0 8h4v4h-4z" fill="#0d62ab"/>
+  <path d="M14 35h4v4h-4z" fill="#005094"/>
+  <path d="M22 15h4v4h-4zm8 0h4v4h-4z" fill="#0d62ab"/>
+  <path d="M38 11H10a1 1 0 1 1 0-2h28a1 1 0 1 1 0 2z" fill="#35c1f1"/>
+  <path d="M44 44V30a2 2 0 0 0-2-2H32a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2z" fill="#37c6d0"/>
+  <path d="M37 36c-2.206 0-4 1.794-4 4v1c0 1.103.897 2 2 2h4c1.103 0 2-.897 2-2v-1c0-2.206-1.794-4-4-4z"
+        opacity=".05"/>
+  <path
+    d="M37 36.5c-1.93 0-3.5 1.57-3.5 3.5v1a1.5 1.5 0 0 0 1.5 1.5h4a1.5 1.5 0 0 0 1.5-1.5v-1c0-1.93-1.57-3.5-3.5-3.5z"
+    opacity=".07"/>
+  <radialGradient cx="36.2" cy="33.6" gradientTransform="translate(6.833 6) scale(.8333)"
+                  gradientUnits="userSpaceOnUse" id="a" r="3.6">
+    <stop offset="0"/>
+    <stop offset="1" stop-opacity="0"/>
+  </radialGradient>
+  <circle cx="37" cy="34" fill="url(#a)" r="3"/>
+  <g fill="#fff">
+    <path d="M37 37a3 3 0 0 0-3 3v1a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3z"/>
+    <circle cx="37" cy="34" r="2"/>
+  </g>
+</svg>

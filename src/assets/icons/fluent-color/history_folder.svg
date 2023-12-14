@@ -1,0 +1,47 @@
+<svg height="16" viewBox="0 0 48 48" width="16" xmlns="http://www.w3.org/2000/svg">
+  <linearGradient gradientUnits="userSpaceOnUse" id="a" x1="23" x2="23" y1="6.725" y2="14.508">
+    <stop offset="0" stop-color="#eba600"/>
+    <stop offset="1" stop-color="#c28200"/>
+  </linearGradient>
+  <path
+    d="m24.414 10.414-2.536-2.536A3 3 0 0 0 19.757 7H6a2 2 0 0 0-2 2v6.5L6 37a2 2 0 0 0 2 2h32a2 2 0 0 0 2-2V14a2 2 0 0 0-2-2l-14.172-1a2 2 0 0 1-1.414-.586z"
+    fill="url(#a)"/>
+  <linearGradient gradientUnits="userSpaceOnUse" id="b" x1="24" x2="24" y1="10.854" y2="40.983">
+    <stop offset="0" stop-color="#ffd869"/>
+    <stop offset="1" stop-color="#fec52b"/>
+  </linearGradient>
+  <path
+    d="m21.586 14.414 3.268-3.268a.5.5 0 0 1 .353-.146H42a2 2 0 0 1 2 2v26a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V15.5a.5.5 0 0 1 .5-.5h15.672a2 2 0 0 0 1.414-.586z"
+    fill="url(#b)"/>
+  <radialGradient cx="38" cy="38.054" gradientUnits="userSpaceOnUse" id="c" r="11.802">
+    <stop offset="0"/>
+    <stop offset="1" stop-opacity="0"/>
+  </radialGradient>
+  <path d="M44 27.6V39c0 1.1-.9 2-2 2H26.38c-.25-.96-.38-1.96-.38-3a12 12 0 0 1 12-12c2.19 0 4.24.58 6 1.6z"
+        fill="url(#c)"/>
+  <path d="M48 38c0 5.522-4.478 10-10 10s-10-4.478-10-10 4.478-10 10-10 10 4.478 10 10z" fill="#09914a"/>
+  <linearGradient gradientUnits="userSpaceOnUse" id="d" x1="31.125" x2="33.65" y1="31.382" y2="41.153">
+    <stop offset="0" stop-color="#f2f2f2"/>
+    <stop offset=".148" stop-color="#eef1ef"/>
+    <stop offset=".282" stop-color="#e4ece8"/>
+    <stop offset=".409" stop-color="#d1e4da"/>
+    <stop offset=".533" stop-color="#b7dac8"/>
+    <stop offset=".654" stop-color="#96ccb0"/>
+    <stop offset=".773" stop-color="#6dbb92"/>
+    <stop offset=".889" stop-color="#3ea770"/>
+    <stop offset="1" stop-color="#09914a"/>
+  </linearGradient>
+  <path d="m38 38-7 7.141A10 10 0 0 1 30.86 31L38 38z" fill="url(#d)"/>
+  <circle cx="38" cy="38" fill="#f2f2f2" r="8"/>
+  <path d="M38 44.375a.375.375 0 0 1-.375-.375v-6a.375.375 0 0 1 .75 0v6a.375.375 0 0 1-.375.375z" fill="#d83b01"/>
+  <g fill="#45494d">
+    <path
+      d="M38 38.375a.37.37 0 0 1-.265-.11.375.375 0 0 1 0-.53l4.243-4.243a.375.375 0 0 1 .53.53l-4.243 4.243a.37.37 0 0 1-.265.11z"/>
+    <path
+      d="M38 38.625a.626.626 0 0 1-.27-.062l-3.894-1.868a.624.624 0 1 1 .54-1.127l3.894 1.868a.624.624 0 0 1-.27 1.189z"/>
+  </g>
+  <circle cx="38" cy="38" fill="#1e2021" r="1"/>
+  <path
+    d="m33.603 33.618-4.153.317a.403.403 0 0 1-.427-.474l.75-4.097a.403.403 0 0 1 .696-.197l3.403 3.78a.403.403 0 0 1-.269.671z"
+    fill="#09914a"/>
+</svg>

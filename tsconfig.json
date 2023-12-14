@@ -1,0 +1,64 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "useDefineForClassFields": false,
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
+    "paths": {
+      "@isc/layout/*": [
+        "app/layout/navigation/*",
+        "app/layout/topbar/*",
+        "app/layout/*"
+      ],
+      "@isc/core/*": [
+        "app/core/*"
+      ],
+      "@env/*": [
+        "environment/*"
+      ],
+      "@isc/api/*": [
+        "app/api/data/*",
+        "app/api/servicio/*"
+      ],
+      "@isc/modulo/*": [
+        "app/modulo/dashboard/*",
+        "app/modulo/folio/*"
+      ],
+      "@isc/toolkit/*": [
+        "app/toolkit/*"
+      ],
+      "@isc/shared/*": [
+        "app/shared/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*"
+  ],
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": false,
+    "strictInputAccessModifiers": false,
+    "strictTemplates": false
+  }
+}

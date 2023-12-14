@@ -1,0 +1,10 @@
+<!--Titulo de la pagina-->
+<div class="w-full flex align-items-center pb-4 border-300 border-bottom-1 mb-3">
+    <span [ngClass]="color" class="flex justify-content-center align-items-center border-round"
+          style="height:3rem; width:3rem;"><i [ngClass]="icon" class="w-2rem h-2rem"></i>
+    </span>
+  <span class="ml-4 flex flex-column">
+        <span class="lg:text-2xl font-bold mb-0 block">{{ title }}</span>
+        <span class="text-600 lg:text-lg">{{ description }}</span>
+    </span>
+</div>

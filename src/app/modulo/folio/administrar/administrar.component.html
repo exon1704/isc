@@ -1,0 +1,188 @@
+<app-title-module description="Explore su historial de reportes y notificaciones en un solo lugar"
+                  icon="nova onlyoffice"
+                  title="Administrador de reportes">
+</app-title-module>
+<p-toolbar styleClass="p-2 surface-section">
+  <ng-template pTemplate="left">
+    <p-button icon="pi pi-plus" label="Nuevo" routerLink="registrar"
+              styleClass=" mr-2">
+    </p-button>
+    <p-button (onClick)="filtrar=!filtrar" [icon]="filtrar?'pi pi-filter-slash':'pi pi-filter'"
+              [text]="true"
+              label="Filtrar"
+              styleClass="p-button-secondary mr-2">
+    </p-button>
+  </ng-template>
+  <ng-template pTemplate="right">
+  </ng-template>
+</p-toolbar>
+<div class="mt-2 flex flex-column  md:flex-row gap-2">
+  <div *ngIf="filtrar" class="md:col col-12 border-round-xl border-1 surface-border surface-section p-3">
+    <div>
+      <h6>Filtro de consulta</h6>
+      <form (ngSubmit)="consultarFoliosPorFiltro()" [formGroup]="formFiltro" class="formgrid grid">
+        <!--Unidad-->
+        <div class="field col-12">
+          <label>Unidad</label>
+          <p-dropdown [filterFields]="['clave','nombre']"
+                      [filter]="true"
+                      [options]="unidades"
+                      [showClear]="true"
+                      filterBy="clave,nombre"
+                      formControlName="unidad"
+                      optionLabel="nombre"
+                      placeholder="Seleccionar"
+                      styleClass="w-full">
+            <!--Lista de visualización de elementos personalizado-->
+            <ng-template let-unidad pTemplate="item">
+              <div class="w-full">
+                <div>{{ unidad["clave"] + " " + unidad["nombre"] }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <!--Area de seguimiento-->
+        <div class="field col-12">
+          <label>Área</label>
+          <p-dropdown
+            [filter]="true"
+            [options]="areas"
+            [showClear]="true"
+            filterBy="nombre"
+            formControlName="area"
+            optionLabel="nombre"
+            placeholder="Seleccionar"
+            styleClass="w-full">
+          </p-dropdown>
+        </div>
+        <!--Estado del reporte-->
+        <div class="field col-12">
+          <label>Estado del reporte</label>
+          <p-dropdown
+            [filter]="true"
+            [options]="estados"
+            [showClear]="true"
+            filterBy="nombre"
+            formControlName="estado"
+            optionLabel="nombre"
+            placeholder="Seleccionar"
+            styleClass="w-full">
+          </p-dropdown>
+        </div>
+        <div class="field col-12 flex justify-content-center gap-2">
+          <p-button (onClick)="consultarFoliosPorFiltro()" label="Aplicar"></p-button>
+          <p-button (onClick)="resetFiltro()" [outlined]="true" icon="pi pi-eraser" severity="secondary"></p-button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div [ngClass]="{'md:col-9':filtrar}" class="col-12 border-round-xl border-1 surface-border surface-section p-3">
+    <div class="flex mb-4 align-items-center gap-2">
+      <form (ngSubmit)="consultarFoliosPorFiltro()" [formGroup]="formFecha">
+        <p-calendar
+          (onSelect)="consultarFoliosPorFiltro()"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          formControlName="fecha"
+          placeholder="Seleccionar fecha"
+          styleClass="w-11rem">
+        </p-calendar>
+      </form>
+      <form (ngSubmit)="consultarPorFolio()" [formGroup]="formFolio" class="ml-auto">
+        <p-inputGroup>
+          <input class="" formControlName="folio" id="folio" pInputText placeholder="Consultar folio"
+                 type="text"/>
+          <button [disabled]="formFolio.invalid" icon="pi pi-search" pButton type="submit"></button>
+        </p-inputGroup>
+      </form>
+
+
+    </div>
+    <p-table #dt
+             [(selection)]="folioSeleccionado"
+             [globalFilterFields]="['folio', 'reporte.nombre', 'reporte.area.nombre','unidad.nombre', 'estado.nombre','fecha']"
+             [loading]="cargandoTabla"
+             [paginator]="true"
+             [rowHover]="true"
+             [rows]="10"
+             [showCurrentPageReport]="true"
+             [tableStyle]="{ 'min-width': '50rem' }"
+             [value]="folios">
+      <ng-template pTemplate="caption">
+        <div class="flex justify-content-between row gap-2">
+                  <span class="p-input-icon-left"><i class="pi pi-search"></i>
+                        <input #filtro (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                               class="w-13rem"
+                               pInputText placeholder="Buscar en resultado" type="text"/>
+                    </span>
+          <p-button (click)="restablecerTabla(dt)" [outlined]="true" icon="pi pi-replay"></p-button>
+
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="reporte.nombre" style="min-width:15rem">Reporte
+            <p-sortIcon field="reporte.nombre"></p-sortIcon>
+          </th>
+          <th pSortableColumn="folio">Folio
+            <p-sortIcon field="folio"></p-sortIcon>
+          </th>
+          <th pSortableColumn="unidad.nombre" style="min-width:10rem">Unidad
+            <p-sortIcon field="unidad.nombre"></p-sortIcon>
+          </th>
+          <th pSortableColumn="reporte.area.nombre" style="min-width:10rem">Área de seguimiento
+            <p-sortIcon field="reporte.area.nombre"></p-sortIcon>
+          </th>
+          <th pSortableColumn="estado.nombre">Estado
+            <p-sortIcon field="estado.nombre"></p-sortIcon>
+          </th>
+          <th pSortableColumn="fecha" style="min-width:10rem">Fecha
+            <p-sortIcon field="fecha"></p-sortIcon>
+          </th>
+          <th>Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template let-data pTemplate="body">
+        <tr>
+          <td class="font-semibold">{{ data.reporte.nombre }}</td>
+          <td>{{ data.folio }}</td>
+          <td>{{ data.unidad.clave + ' ' + data.unidad.nombre }}</td>
+          <td>{{ data.reporte.area.nombre }}</td>
+          <td>
+            <span [class]="'font-semibold estado-'+data.estado.nombre?.toLowerCase()"
+                  class="estado-reporte">{{ data.estado.nombre }}</span>
+          <td>
+            {{ data.fecha }}
+          </td>
+          <td>
+            <div class="flex gap-1">
+              <p-button (click)="editarFolio(data)" [rounded]="true" icon="pi pi-pencil"
+                        severity="success"></p-button>
+              <p-button (click)="eliminarFolio(data)" [rounded]="true" icon="pi pi-trash"
+                        severity="warning"></p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <!--Mensaje cuando no hay registros-->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7">
+            <div class="p-4 w-max">
+              <h3>Sin registros</h3>
+              <div *ngIf="!formFolio.valid||!formFiltro.valid">
+                <h5 class="text-color-secondary">No hay registros disponibles. Actualize la tabla
+                  nuevamente</h5>
+              </div>
+              <div *ngIf="formFolio.valid">
+                <h5 class="text-color-secondary">No se encontraron resultados que coincidan con su
+                  búsqueda. Actualize la tabla nuevamente</h5>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+<p-toast [life]="8000" key="server"></p-toast>
