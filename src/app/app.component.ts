@@ -11,7 +11,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.primengConfig.ripple = true;
     this.primengConfig.setTranslation({
 
       dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
