@@ -1,75 +1,99 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core'
+import {Subscription} from "rxjs";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {DatePipe} from "@angular/common";
 import {Estado} from "@isc/api/estado";
-import {Unidad} from "@isc/api/unidad";
 import {Folio} from "@isc/api/Folio";
+import {Unidad} from "@isc/api/unidad";
 import {Area} from "@isc/api/area";
-import {Paginador} from "@isc/toolkit/paginador";
-import {MessageService} from "primeng/api";
-import {ErrorService} from "@isc/core/error.service";
+import {ErrorService} from "@isc/shared/service/error.service";
+import {AdministrarHandlerService} from "@isc/modulo/service/administrar-handler.service";
 import {UnidadService} from "@isc/api/unidad.service";
 import {EstadoService} from "@isc/api/estado.service";
-import {AreaService} from "@isc/api/area.service";
 import {FolioService} from "@isc/api/folio.service";
-import {DatePipe} from "@angular/common";
+import {AreaService} from "@isc/api/area.service";
 import {FiltroFolio} from "@isc/toolkit/filtro-folio";
-import {HttpStatusCode} from "@angular/common/http";
 import {Table} from "primeng/table";
 
 @Component({
-  selector: 'app-administrar', templateUrl: './administrar.component.html', styleUrl: './administrar.component.scss'
+  providers: [DatePipe],
+  selector: 'app-administrar',
+  templateUrl: './administrar.component.html',
+  styleUrl: './administrar.component.scss'
 })
-export class AdministrarComponent implements OnInit {
-  @ViewChild('filtro') filter!: ElementRef;
-  filtrar!: boolean;
-  folioSeleccionado!: any;
-  folios!: Folio[];
-  formFolio!: FormGroup;
-  formFiltro!: FormGroup;
-  estados!: Estado[];
-  unidades!: Unidad[];
-  areas!: Area[];
-  fechaHoy!: Date;
-  infoTabla!: Paginador;
-  formFecha!: FormGroup;
-  cargandoTabla!: boolean;
+export class AdministrarComponent implements OnInit, OnDestroy {
+  @ViewChild('inFiltro') filter!: ElementRef;
+  paginador = {
+    first: 0, rows: 100, page: 0, totalElements: 0, pageCount: 0
+  }
+  // Formularios
+  formFiltro!: FormGroup
+  formFecha!: FormGroup
+  formFolio!: FormGroup
+  //Variable de datos
+  unidades!: Unidad[]
+  areas!: Area[]
+  estados!: Estado[]
+  folios: Folio[];
 
-  constructor(private messageService: MessageService, private appError: ErrorService, private unidadService: UnidadService, private estadoService: EstadoService, private areaService: AreaService, private folioService: FolioService, private datePipe: DatePipe, private formBuilder: FormBuilder) {
-    this.inicializarFecha()
-    this.infoTabla = {
-      filas: 100, pagina: 0, totalElementos: 0
+  cargandoTabla: boolean = true;
+  panelFiltro: boolean = false
+  protected errorService = inject(ErrorService);
+  // Subscriptores y observables
+  private adminHandlerService = inject(AdministrarHandlerService)
+  private unidadService = inject(UnidadService)
+  private estadoService = inject(EstadoService)
+  private folioService = inject(FolioService)
+  private areaService = inject(AreaService)
+  private areaSubscription: Subscription
+  private unidadSubscription: Subscription
+  private estadoSubscription: Subscription
+  private folioSubscription: Subscription
+  private mes: Date;
+
+  constructor(private builder: FormBuilder, private datePipe: DatePipe) {
+    this.asignarMesConsulta()
+    this.formFecha = this.builder.group({fecha: [this.mes, Validators.required]})
+    this.formFolio = this.builder.group({folio: ['', Validators.required]})
+    this.formFiltro = this.builder.group({unidad: null, estado: null, area: null})
+  }
+
+  ngOnDestroy(): void {
+    if (this.areaSubscription) {
+      this.areaSubscription.unsubscribe()
     }
-    this.formFecha = this.formBuilder.group({fecha: [this.fechaHoy, Validators.required]})
-    this.formFolio = this.formBuilder.group({folio: ['', Validators.required]})
-    this.formFiltro = this.formBuilder.group({unidad: null, estado: null, area: null})
-    console.log("constructor")
+    if (this.estadoSubscription) {
+      this.estadoSubscription.unsubscribe()
+    }
+    if (this.unidadSubscription) {
+      this.unidadSubscription.unsubscribe()
+    }
+    if (this.folioSubscription) {
+      this.folioSubscription.unsubscribe()
+    }
   }
 
-  editarFolio(folio: any) {
-
-  }
-
-  eliminarFolio(data: any) {
-
-  }
-
-  ngOnInit(): void {
-    console.log("ngOnInit")
-    this.consultarFoliosPorFiltro();
-    this.obtenerUnidades();
+  ngOnInit() {
+    this.obtenerFoliosPorFiltro();
     this.obtenerAreas()
-    this.obtenerEstados();
+    this.obtenerUnidades()
+    this.obtenerEstados()
   }
 
-  obtenerFiltroConsulta() {
+  asignarMesConsulta() {
+    let fecha = new Date()
+    this.mes = new Date(fecha.getFullYear(), fecha.getMonth(), 1)
+  }
+
+  generarFiltro() {
     let data: FiltroFolio = {
       fecha: this.datePipe.transform(this.formFecha?.get('fecha')?.value, 'yyyy-MM-ddTHH:mm:ss')!,
       unidad: this.formFiltro.get('unidad')?.value?.id,
       estado: this.formFiltro?.get('estado')?.value?.id,
       area: this.formFiltro?.get('area')?.value?.id,
       folio: this.formFolio?.get('folio')?.value,
-      pagina: this.infoTabla.pagina,
-      filas: this.infoTabla.filas,
+      pagina: this.paginador.page,
+      filas: this.paginador.rows,
     }
     Object.entries(data).forEach(([key, value]) => {
       if (value === undefined) {
@@ -79,97 +103,112 @@ export class AdministrarComponent implements OnInit {
     return data
   }
 
-  obtenerFechaConsulta() {
-    console.log("fechaConsulta")
-    return this.datePipe.transform(this.formFecha?.get('fecha')?.value, 'dd-MM-yyyy');
+  evtFiltrar() {
+    this.panelFiltro = !this.panelFiltro
+    this.formFiltro.reset()
   }
 
-  consultarFoliosPorFiltro() {
-    console.log("consultarReportes")
-    this.folios = []
-    this.cargandoTabla = true;
-    this.folioService.obtenerFolios(this.obtenerFiltroConsulta()).subscribe({
-      next: (response) => {
-        if (response.code === HttpStatusCode.NoContent) {
-          this.messageService.clear('server');
-          this.messageService.add({
-            key: 'server',
-            severity: 'info',
-            summary: `Consulta desde el ${this.obtenerFechaConsulta()}`,
-            detail: response.message
-          });
-        } else {
-          this.folios = response.data
-        }
-      }, complete: () => this.cargandoTabla = false, error: (err) => {
-        this.cargandoTabla = false
-        this.appError.handleHttpError(err)
-      }
-    })
+  resetTabla(dt: Table) {
+    this.filter.nativeElement.value = '';
+    dt.clear()
+    this.formFolio.reset()
+    this.obtenerFoliosPorFiltro()
+  }
+
+  editar(data: any) {
 
   }
 
-  consultarPorFolio() {
-    this.folios = []
+  eliminar(data: any) {
+
+  }
+
+  onPageChange(event) {
+    this.paginador.first = event.first;
+    this.paginador.page = event.page
+    this.paginador.rows = event.rows;
+    this.obtenerFoliosPorFiltro()
+  }
+
+  evtFiltro() {
+    this.resetPaginador()
+    this.obtenerFoliosPorFiltro()
+  }
+
+  resetPaginador() {
+    this.paginador.page = 0;
+    this.paginador.totalElements = 0
+    this.paginador.first = 0
+    this.paginador.pageCount = 0
+  }
+
+  protected obtenerFolio() {
+
     this.cargandoTabla = true
     this.folioService.obtenerPorFolio(this.formFolio?.get('folio')?.value).subscribe({
       next: value => {
-        if (value.code === HttpStatusCode.NoContent) {
-          this.messageService.clear('server');
-          this.messageService.add({
-            key: 'server',
-            severity: 'warn',
-            summary: `Folio: ${this.formFolio?.get('folio')?.value}`,
-            detail: value.message
-          });
-        } else {
+        this.folios = []
+        this.paginador.totalElements = 0;
+        if (value.code != 204) {
           this.folios.push(value.data)
+          this.paginador.first = 0
+          this.paginador.totalElements = 1
         }
-      }, complete: () => this.cargandoTabla = false, error: (err) => {
+        console.log(value)
+      }, error: err => {
         this.cargandoTabla = false
-        this.appError.handleHttpError(err)
+      }, complete: () => {
+        this.cargandoTabla = false
       }
     })
   }
 
-  restablecerTabla(dt: Table) {
-    dt.clear()
-    this.filter.nativeElement.value = '';
-    this.formFolio.reset()
-    this.consultarFoliosPorFiltro()
-  }
-
-  resetFiltro() {
-    this.formFiltro.reset()
-    this.consultarFoliosPorFiltro()
-  }
-
-  private inicializarFecha() {
-    let month = new Date()
-    this.fechaHoy = new Date(month.getFullYear(), month.getMonth(), 1)
-  }
-
-  private obtenerUnidades() {
-    this.unidadService.obtenerUnidades().subscribe({
+  protected obtenerFoliosPorFiltro() {
+    this.cargandoTabla = true
+    this.folioSubscription = this.folioService.obtenerFolios(this.generarFiltro()).subscribe({
       next: value => {
-        this.unidades = value.data
+        console.log(value)
+        this.folios = []
+        if (value.code == 200) {
+          this.paginador.totalElements = value.page.totalElements
+          this.folios = value.data
+        } else {
+          this.resetPaginador()
+        }
+      }, error: err => {
+        this.cargandoTabla = false
+      }, complete: () => {
+        this.cargandoTabla = false
       }
     })
+  }
+
+  protected resetFiltro() {
+    this.formFiltro.reset()
+    this.obtenerFoliosPorFiltro()
   }
 
   private obtenerAreas() {
-    this.areaService.obtenerAreas().subscribe({
-      next: value => {
-        this.areas = value.data
+    this.areaSubscription = this.areaService.obtenerAreas().subscribe({
+      next: (t) => this.areas = t.data, error: (err) => {
+        this.adminHandlerService.httpHandlerServiceError(err, 'Areas', true);
       }
-    })
+    });
+  }
+
+  private obtenerUnidades() {
+    this.unidadSubscription = this.unidadService.obtenerUnidades().subscribe({
+      next: (t) => this.unidades = t.data, error: (err) => {
+        this.adminHandlerService.httpHandlerServiceError(err, 'Unidades', true);
+      }
+    });
   }
 
   private obtenerEstados() {
-    this.estadoService.obtenerEstado().subscribe({
-      next: value => {
-        this.estados = value.data
+    this.estadoSubscription = this.estadoService.obtenerEstado().subscribe({
+      next: (t) => this.estados = t.data, error: (err) => {
+        this.adminHandlerService.httpHandlerServiceError(err, 'Estados de operación', true);
       }
-    })
+    });
   }
 }

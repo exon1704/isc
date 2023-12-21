@@ -1,16 +1,14 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {AdministrarComponent} from "@isc/modulo/administrar/administrar.component";
-import {RegistrarComponent} from "@isc/modulo/administrar/registrar/registrar.component";
+import {AdministrarComponent} from "@isc/modulo/administrar.component";
 
 const routes: Routes = [{
-  path: '', component: AdministrarComponent,
-}, {
-  path: 'registrar', component: RegistrarComponent
+  path: '', component: AdministrarComponent
 }];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)], exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class AdministrarRoutingModule {
 }
