@@ -41,6 +41,8 @@
       ],
       "@isc/modulo/*": [
         "app/modulo/dashboard/*",
+        "app/modulo/folio/administrar/*",
+        "app/modulo/folio/registro/*",
         "app/modulo/folio/*"
       ],
       "@isc/toolkit/*": [
