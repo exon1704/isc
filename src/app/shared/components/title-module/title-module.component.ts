@@ -6,8 +6,8 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['./title-module.component.scss']
 })
 export class TitleModuleComponent {
-  @Input() title = ''
-  @Input() description = ''
+  @Input() titulo = ''
+  @Input() subtitulo = ''
   @Input() icon = '';
   @Input() color = 'bg-green-300';
 }
