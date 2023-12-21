@@ -5,11 +5,10 @@ import {NotfoundComponent} from "./notfound/notfound.component";
 
 @NgModule({
   imports: [RouterModule.forRoot([{
-    path: '', component: AppLayoutComponent, children: [{
-      path: 'dashboard', loadChildren: () => import("@isc/modulo/dashboard.module").then(value => value.DashboardModule)
-    }, {
-      path: 'folio', loadChildren: () => import("@isc/modulo/folio.module").then(value => value.FolioModule)
-    }]
+    path: '', component: AppLayoutComponent, children: [
+      {path: 'folio', loadChildren: () => import("@isc/modulo/administrar.module").then(m => m.AdministrarModule)},
+      {path: 'registrar', loadChildren: () => import("@isc/modulo/registro.module").then(m => m.RegistroModule)}
+    ]
   }, {path: 'notfound', component: NotfoundComponent}, {
     path: '**', redirectTo: '/notfound'
   },], {
