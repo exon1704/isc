@@ -1,5 +1,4 @@
 import {NgModule} from '@angular/core';
-
 import {AdministrarRoutingModule} from './administrar-routing.module';
 import {AdministrarComponent} from './administrar.component';
 import {ErrorComponent} from "@isc/core/shared/components/error/error.component";
