@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
+import {TicketData} from "@isc/core/ticket.data";
 
 @Component({
   selector: 'app-ticket',
@@ -9,5 +10,5 @@ import {NgOptimizedImage} from "@angular/common";
   styleUrl: './ticket.component.scss'
 })
 export class TicketComponent {
-  @Input() folio: any
+  @Input() folio: TicketData
 }
