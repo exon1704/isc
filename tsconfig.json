@@ -30,7 +30,12 @@
         "app/layout/*"
       ],
       "@isc/core/*": [
-        "app/core/*"
+        "app/core/*",
+        "app/core/error/*",
+        "app/core/shared/components/ticket/*",
+        "app/core/shared/components/spinner/*",
+        "app/core/shared/components/error/*",
+        "app/core/shared/components/*"
       ],
       "@env/*": [
         "environment/*"
