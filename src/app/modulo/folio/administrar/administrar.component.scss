@@ -1,30 +1,7 @@
-.tag-abierto {
-
+:host ::ng-deep .p-datatable-footer {
+  background-color: var(--surface-overlay);
 }
 
-.estado-reporte {
-  border-radius: var(--border-radius);
-  padding: .25em .5rem;
-}
-
-.estado-reporte {
-  &.estado-abierto {
-    background-color: var(--green-500);
-    color: white;
-  }
-
-  &.estado-cerrado {
-    background-color: var(--primary-color);
-    color: var(--primary-color-text);
-  }
-
-  &.estado-pendiente {
-    background-color: var(--gray-300);
-    color: black;
-  }
-
-  &.estado-cancelado {
-    background-color: var(--red-400);
-    color: var(--primary-color-text);
-  }
+.h-calc {
+  height: calc(100vh - 8rem);
 }

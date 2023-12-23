@@ -14,6 +14,7 @@ export interface Folio {
   };
   fecha?: string;
   folio?: string;
+  agente?: string;
   unidad?: {
     id?: number;
     nombre?: string;

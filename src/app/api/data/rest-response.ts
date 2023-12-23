@@ -3,4 +3,5 @@ export interface RestResponse {
   message?: string;
   code?: number;
   size?: number;
+  page?: any
 }

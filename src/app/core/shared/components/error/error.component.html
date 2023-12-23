@@ -1,0 +1,13 @@
+@if (errors.errors.size > 0) {
+  <div class="flex align-items-start p-4 bg-pink-100 border-round border-1 border-pink-300 mt-2"><i
+    class="pi pi-server text-pink-900 text-4xl mr-3"></i>
+    <div class="mr-3">
+      <div class="text-pink-900 font-medium text-xl mb-3 line-height-1">Errores generados</div>
+      <ul class="m-0 p-0 text-pink-700 ml-3">
+        @for (text of errors.errors.values();track text) {
+          <li class="p-1">{{ text }}</li>
+        }
+      </ul>
+    </div>
+  </div>
+}

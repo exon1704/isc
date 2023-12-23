@@ -1,0 +1,179 @@
+<app-title-module color="bg-green-300"
+                  icon="nova documents_folder"
+                  subtitulo="Inicie el proceso de registro de reportes o genere folios internos de seguimiento"
+                  titulo="Registrar reporte"
+></app-title-module>
+@defer (when errorService.errors.size > 0) {
+  @if (errorService.errors.size > 0) {
+    <app-error></app-error>
+  }
+}
+@if (errorService.errors.size == 0) {
+  <div class="p-toolbar p-2 mt-4">
+    <div class="p-toolbar-group-start">
+      <p-button [plain]="true" [text]="true" icon="pi pi-book" label="Generales"></p-button>
+      <p-button [plain]="true" [text]="true" icon="pi pi-tags" label="Folios en seguimiento"></p-button>
+    </div>
+  </div>
+
+  <div class="border-round-md border-1 surface-border surface-section mt-2">
+    <form (ngSubmit)="registrar()" [formGroup]="formReporte" class="formgrid grid p-4">
+      <div class="field col-12 md:col-4">
+        <label class="font-semibold is-required">Unidad</label>
+        <p-dropdown [filterFields]="['clave','nombre']" [filter]="true" [options]="unidades" [showClear]="true"
+                    filterBy="clave,nombre" formControlName="unidad"
+                    optionLabel="nombre" styleClass="w-full">
+          <ng-template pTemplate="selectedItem">
+            @if (formReporte.get('unidad')?.value) {
+              <div>
+                {{ formReporte.get('unidad')?.value.clave }} {{ formReporte.get('unidad')?.value.nombre }}
+              </div>
+            }
+          </ng-template>
+          <!--Lista de visualización de elementos personalizado-->
+          <ng-template let-unidad pTemplate="item">
+            <div class="w-full">
+              <div>{{ unidad["clave"] + " " + unidad["nombre"] }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="field col-12 md:col-4">
+        <label class="is-required font-semibold" for="area">Área de seguimiento</label>
+        <p-dropdown
+          [options]="areas"
+          [showClear]="true"
+          formControlName="area"
+          inputId="area"
+          optionLabel="area.nombre"
+          styleClass="w-full">
+        </p-dropdown>
+      </div>
+      <div class="field col-12 md:col-4">
+        <label class="is-required font-semibold" for="reporte">Reporte</label>
+        <p-dropdown
+          [filter]="true"
+          [options]="reportes"
+          [showClear]="true"
+          filterBy="nombre"
+          formControlName="reporte"
+          inputId="reporte"
+          optionLabel="nombre"
+          styleClass="w-full">
+        </p-dropdown>
+      </div>
+      <div class="field col-12 md:col-4">
+        <label class="is-required font-semibold" for="folio">Folio de seguimiento</label>
+        <p-inputGroup>
+          <input aria-describedby="folio" formControlName="folio" id="folio" pInputText
+                 required
+                 type="text"/>
+          <button (click)="generarFolio()" [disabled]="deshabilitarFolio" icon="pi pi-refresh" pButton
+                  type="button"></button>
+        </p-inputGroup>
+        @defer (when formReporte.get('folio').hasError('invalido')) {
+          @if (formReporte.get('folio').hasError('invalido')) {
+            <span class="p-error">El folio introducido ya se encuentra registrado</span>
+          }
+        }
+      </div>
+      <div class="field col-12 md:col-4">
+        <label class="font-semibold">Estado del reporte</label>
+        <p-dropdown
+          [options]="estados"
+          [showClear]="true"
+          formControlName="estado"
+          optionLabel="nombre"
+          styleClass="w-full">
+        </p-dropdown>
+      </div>
+      <div class="field col-12 md:col-4">
+        <label class="font-semibold" for="agente">Agente</label>
+        <input class="w-full" formControlName="agente" id="agente" pInputText type="text">
+      </div>
+      <div class="field col-12">
+        @if (!activarDetalles) {
+          <div class="flex align-items-center gap-2">
+            <div class="p-checkbox ">
+              <div class="p-checkbox-box" (click)="evtDetalles()">
+                <div class="p-checkbox-icon"></div>
+              </div>
+            </div>
+            <label class="p-checkbox-label font-semibold">Agregar detalles</label>
+          </div>
+        }
+        @defer (when activarDetalles) {
+          <label class="font-semibold">Detalles</label>
+          <p-editor
+            [style]="{ height: '320px' }" formControlName="detalles"
+            styleClass="m-0 p-0">
+            <ng-template pTemplate="header">
+        <span class="ql-formats">
+            <button type="button" class="ql-bold" aria-label="Bold"></button>
+            <button type="button" class="ql-italic" aria-label="Italic"></button>
+            <button type="button" class="ql-underline" aria-label="Underline"></button>
+        </span>
+              <span class="ql-formats">
+              <button class="ql-list" value="ordered"></button>
+              <button class="ql-list" value="bullet"></button>
+            <select title="Text Alignment" class="ql-align">
+              <option selected>Gauche</option>
+              <option value="center" label="Center"></option>
+              <option value="right" label="Right"></option>
+              <option value="justify" label="Justify"></option>
+            </select>
+          </span>
+              <span class="ql-formats">
+            <button aria-label="Link" class="ql-link"></button>
+            <button aria-label="Image" class="ql-image"></button>
+          </span>
+            </ng-template>
+          </p-editor>
+        }
+      </div>
+      <div class="col-12 flex align-items-center justify-content-center gap-2">
+        <button class="p-button-secondary p-button-outlined" label="Cancelar" pButton
+                routerLink="/folio"></button>
+        <button [disabled]="formReporte.invalid" label="Registrar" pButton type="submit"></button>
+      </div>
+    </form>
+    @defer (when visibleDialog) {
+      <p-dialog [(visible)]="visibleDialog" [breakpoints]="{ '575px': '90vw' }"
+                [draggable]="false"
+                header="Proceso completado"
+                [resizable]="false"
+                [style]="{ width: '38rem' }" modal="true">
+        <app-ticket [folio]="folio"></app-ticket>
+        <!--      <div class="p-messages">-->
+        <!--        <div class="p-message" [ngClass]="'p-message-'+info.tipo">-->
+        <!--          <div class="p-message-detail p-3 font-semibold">-->
+        <!--            <i [ngClass]="info.tipo==='success'?'pi-check':'pi-exclamation-triangle'" class="pi mr-2"-->
+        <!--               style="font-size: 1.2rem">-->
+        <!--            </i>{{ info.mensaje }}-->
+        <!--          </div>-->
+        <!--        </div>-->
+        <!--      </div>-->
+        <!--      <div class="flex">-->
+        <!--        @if (info.tipo==='success'){-->
+        <!--          <div>-->
+        <!--            <a (click)="copyCode($event)" [attr.tabindex]="'0'" class="block-action-copy"-->
+        <!--               pTooltip="Copiado al portapapeles" tooltipEvent="focus" tooltipPosition="bottom"><i-->
+        <!--              class="pi pi-copy m-0"-->
+        <!--              style="font-size: 1.5rem"></i></a>-->
+        <!--          </div>-->
+        <!--        }-->
+        <!--        <div>-->
+        <!--          @for (text of info.detalles;track text) {-->
+        <!--            <div class="ml-3 border-left-1 surface-border pl-3">{{ text }}</div>-->
+        <!--          }-->
+        <!--        </div>-->
+        <!--      </div>-->
+        <ng-template pTemplate="footer">
+          <div class="flex justify-content-center">
+            <button (click)="visibleDialog = false" label="Aceptar" pButton></button>
+          </div>
+        </ng-template>
+      </p-dialog>
+    }
+  </div>
+}
