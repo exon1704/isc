@@ -9,7 +9,7 @@ import {ButtonModule} from "primeng/button";
 
 @NgModule({
   declarations: [...fromComponents.components],
-  imports: [InputTextModule, ButtonModule, FormsModule, ReactiveFormsModule, HttpClientModule, CommonModule],
+  imports: [InputTextModule, ButtonModule, ReactiveFormsModule, HttpClientModule, CommonModule],
   exports: [InputTextModule, FormsModule, ButtonModule, TitleModuleComponent, ReactiveFormsModule, HttpClientModule, CommonModule, ...fromComponents.components]
 })
 export class SharedModule {
