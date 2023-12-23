@@ -1,14 +1,13 @@
-<app-title-module color="bg-teal-700"
+<app-title-module color="bg-gray-50"
                   icon="nova onlyoffice"
                   subtitulo="Administre su historial de reportes"
                   titulo="Administrador de reportes">
 </app-title-module>
-@defer (when errorService.errors.size > 0) {
-  @if (errorService.errors.size > 0) {
+@if (errorService.errors.size > 0) {
+  @defer (when errorService.errors.size > 0) {
     <app-error></app-error>
   }
-}
-@if (errorService.errors.size == 0) {
+} @else {
   <div class="p-toolbar p-2 mt-4">
     <div class="p-toolbar-group-start">
       <p-button icon="pi pi-plus" label="Nuevo" routerLink="/registrar"
@@ -120,9 +119,6 @@
             <p-button (click)="resetTabla(dt)" [outlined]="true" icon="pi pi-replay"></p-button>
 
           </div>
-        </ng-template>
-        <ng-template pTemplate="loadingicon">
-          <p-progressSpinner></p-progressSpinner>
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
