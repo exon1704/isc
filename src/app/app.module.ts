@@ -8,11 +8,18 @@ import {SharedModule} from "@isc/shared/shared.module";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MessageService} from "primeng/api";
+import {SpinnerComponent} from "@isc/core/shared/components/spinner/spinner.component";
+import {HTTP_INTERCEPTORS} from "@angular/common/http";
+import {LoaderInterceptor} from "@isc/core/shared/interceptor/loader.interceptor";
+import {ProgressSpinnerModule} from "primeng/progressspinner";
 
 @NgModule({
-  declarations: [AppComponent, NotfoundComponent],
-  imports: [SharedModule, BrowserModule, BrowserAnimationsModule, AppRoutingModule, AppLayoutModule],
-  providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}, MessageService],
+  declarations: [AppComponent, NotfoundComponent, SpinnerComponent],
+  imports: [SharedModule, BrowserModule, BrowserAnimationsModule, AppRoutingModule, AppLayoutModule, ProgressSpinnerModule],
+  providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}, MessageService, {
+    provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true
+  }],
+  exports: [SpinnerComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {
