@@ -19,6 +19,7 @@ import {Table} from "primeng/table";
   providers: [DatePipe],
   selector: 'app-administrar',
   templateUrl: './administrar.component.html',
+
   styleUrl: './administrar.component.scss'
 })
 export class AdministrarComponent implements OnInit, OnDestroy {
@@ -56,6 +57,10 @@ export class AdministrarComponent implements OnInit, OnDestroy {
     this.formFecha = this.builder.group({fecha: [this.mes, Validators.required]})
     this.formFolio = this.builder.group({folio: ['', Validators.required]})
     this.formFiltro = this.builder.group({unidad: null, estado: null, area: null})
+    this.obtenerFoliosPorFiltro();
+    this.obtenerAreas()
+    this.obtenerUnidades()
+    this.obtenerEstados()
   }
 
   ngOnDestroy(): void {
@@ -74,10 +79,7 @@ export class AdministrarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.obtenerFoliosPorFiltro();
-    this.obtenerAreas()
-    this.obtenerUnidades()
-    this.obtenerEstados()
+
   }
 
   asignarMesConsulta() {
@@ -150,6 +152,7 @@ export class AdministrarComponent implements OnInit, OnDestroy {
         this.folios = []
         this.paginador.totalElements = 0;
         if (value.code != 204) {
+          console.log(value)
           this.folios.push(value.data)
           this.paginador.first = 0
           this.paginador.totalElements = 1
@@ -167,9 +170,9 @@ export class AdministrarComponent implements OnInit, OnDestroy {
     this.cargandoTabla = true
     this.folioSubscription = this.folioService.obtenerFolios(this.generarFiltro()).subscribe({
       next: value => {
-        console.log(value)
         this.folios = []
         if (value.code == 200) {
+          console.log(value)
           this.paginador.totalElements = value.page.totalElements
           this.folios = value.data
         } else {
