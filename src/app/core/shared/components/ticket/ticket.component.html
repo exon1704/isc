@@ -1,0 +1,37 @@
+<div class="col">
+  <div class="relative text-center ticket surface-200 border-green-500 border-round-xl pb-2">
+    <div class="ticket-icon relative">
+      <img alt="tk" class="message-icon" height="16" ngSrc="assets/icons/ticket.svg" width="16">
+    </div>
+    <div class="text-lg mt-1 text-color-secondary">Folio de operación</div>
+    <div class="text-2xl font-bold text-primary">{{ folio.folio }}</div>
+    <div class="text-lg mt-2 text-color-secondary">Reporte</div>
+    <div class="text-xl font-semibold">{{ folio.reporte }}</div>
+    <div class="px-4 mt-3">
+      <div class="px-4 surface-50 surface-border border-1 border-round mb-4">
+        <div class="flex-column b-bottom pb-4 text-lg">
+          <div class="flex justify-content-between py-3">
+            <div>Unidad</div>
+            {{ folio.unidad }}
+          </div>
+          <div class="flex justify-content-between pb-3">
+            <div>Área de seguimiento</div>
+            {{ folio.area }}
+          </div>
+          @if (folio.agente !== '') {
+            <div class="flex justify-content-between pb-3">
+              <div>Atiende</div>
+              {{ folio.agente }}
+            </div>
+          }
+          @if (folio.estado !== '') {
+            <div class="flex justify-content-between">
+              <div>Estado</div>
+              {{ folio.estado }}
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
