@@ -17,7 +17,7 @@ Ejecute `ng serve` como servidor de desarrollo local.
 ## Ejemplo de acceso a web app
  `http://192.168.1.103:443/`.
 
-Para correr en red locoal, la IP dependerá de la establecida en el equipo, así como el puerto asignado en el archivo package.json.
+Para correr en red local, la IP dependerá de la establecida en el equipo, así como el puerto asignado en el archivo package.json.
 
 `"start": "ng serve --host 0.0.0.0 --port=443"`
 
