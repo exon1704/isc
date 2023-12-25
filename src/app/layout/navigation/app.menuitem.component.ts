@@ -1,48 +1,53 @@
 import {ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {Subscription} from 'rxjs';
+import {NgClass, NgFor, NgIf} from "@angular/common";
+import {animate, state, style, transition, trigger} from "@angular/animations";
+import {NavigationEnd, Router, RouterLink, RouterLinkActive} from "@angular/router";
+import {Subscription} from "rxjs";
 import {LayoutService} from "@isc/layout/app.layout.service";
 import {MenuService} from "@isc/layout/app.menu.service";
 import {filter} from "rxjs/operators";
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: '[app-menuitem]', template: `
-        <ng-container>
-            <div *ngIf="root && item.visible !== false" class="layout-menuitem-root-text">{{ item.label }}</div>
-            <a *ngIf="(!item.routerLink || item.items) && item.visible !== false" [attr.href]="item.url"
-               (click)="itemClick($event)"
-               [ngClass]="item.class" [attr.target]="item.target" tabindex="0" pRipple>
-                <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
-                <span class="layout-menuitem-text">{{ item.label }}</span>
-                <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
-            </a>
-            <a *ngIf="(item.routerLink && !item.items) && item.visible !== false" (click)="itemClick($event)"
-               [ngClass]="item.class"
-               [routerLink]="item.routerLink" routerLinkActive="active-route"
-               [routerLinkActiveOptions]="item.routerLinkActiveOptions||{ paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
-               [fragment]="item.fragment" [queryParamsHandling]="item.queryParamsHandling"
-               [preserveFragment]="item.preserveFragment"
-               [skipLocationChange]="item.skipLocationChange" [replaceUrl]="item.replaceUrl" [state]="item.state"
-               [queryParams]="item.queryParams"
-               [attr.target]="item.target" tabindex="0" pRipple>
-                <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
-                <span class="layout-menuitem-text">{{ item.label }}</span>
-                <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
-            </a>
+  selector: '[app-menuitem]',
+  template: `
+    <ng-container>
+      <div *ngIf="root && item.visible !== false" class="layout-menuitem-root-text">{{ item.label }}</div>
+      <a *ngIf="(!item.routerLink || item.items) && item.visible !== false" [attr.href]="item.url"
+         (click)="itemClick($event)"
+         [ngClass]="item.class" [attr.target]="item.target" tabindex="0" pRipple>
+        <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
+        <span class="layout-menuitem-text">{{ item.label }}</span>
+        <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
+      </a>
+      <a *ngIf="(item.routerLink && !item.items) && item.visible !== false" (click)="itemClick($event)"
+         [ngClass]="item.class"
+         [routerLink]="item.routerLink" routerLinkActive="active-route"
+         [routerLinkActiveOptions]="item.routerLinkActiveOptions||{ paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
+         [fragment]="item.fragment" [queryParamsHandling]="item.queryParamsHandling"
+         [preserveFragment]="item.preserveFragment"
+         [skipLocationChange]="item.skipLocationChange" [replaceUrl]="item.replaceUrl" [state]="item.state"
+         [queryParams]="item.queryParams"
+         [attr.target]="item.target" tabindex="0" pRipple>
+        <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
+        <span class="layout-menuitem-text">{{ item.label }}</span>
+        <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
+      </a>
 
-            <ul *ngIf="item.items && item.visible !== false" [@children]="submenuAnimation">
-                <ng-template ngFor let-child let-i="index" [ngForOf]="item.items">
-                    <li app-menuitem [item]="child" [index]="i" [parentKey]="key" [class]="child.badgeClass"></li>
-                </ng-template>
-            </ul>
-        </ng-container>
-  `, animations: [trigger('children', [state('collapsed', style({
+      <ul *ngIf="item.items && item.visible !== false" [@children]="submenuAnimation">
+        <ng-template ngFor let-child let-i="index" [ngForOf]="item.items">
+          <li app-menuitem [item]="child" [index]="i" [parentKey]="key" [class]="child.badgeClass"></li>
+        </ng-template>
+      </ul>
+    </ng-container>
+  `,
+  animations: [trigger('children', [state('collapsed', style({
     height: '0'
   })), state('expanded', style({
     height: '*'
-  })), transition('collapsed <=> expanded', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))])]
+  })), transition('collapsed <=> expanded', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))])],
+  standalone: true,
+  imports: [NgIf, NgClass, RouterLinkActive, RouterLink, NgFor]
 })
 export class AppMenuitemComponent implements OnInit, OnDestroy {
 
@@ -66,7 +71,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
     this.menuSourceSubscription = this.menuService.menuSource$.subscribe(value => {
       Promise.resolve(null).then(() => {
         if (value.routeEvent) {
-          this.active = (value.key === this.key || value.key.startsWith(this.key + '-')) ? true : false;
+          this.active = (value.key === this.key || value.key.startsWith(this.key + '-'));
         } else {
           if (value.key !== this.key && !value.key.startsWith(this.key + '-')) {
             this.active = false;
@@ -80,7 +85,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
     });
 
     this.router.events.pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(params => {
+      .subscribe(() => {
         if (this.item.routerLink) {
           this.updateActiveStateFromRoute();
         }

@@ -1,11 +1,14 @@
 import {Component, Input} from '@angular/core';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'app-title-module',
-  templateUrl: './title-page.component.html',
-  styleUrls: ['./title-module.component.scss']
+  templateUrl: './header.html',
+  styleUrls: ['./header.scss'],
+  standalone: true,
+  imports: [NgClass]
 })
-export class TitleModuleComponent {
+export class Header {
   @Input() titulo = ''
   @Input() subtitulo = ''
   @Input() icon = '';

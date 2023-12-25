@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {ButtonModule} from "primeng/button";
-import {ErrorService} from "@isc/shared/service/error.service";
+import {ErrorService} from "./error.service";
 
 @Component({
   selector: 'app-error',
@@ -10,6 +10,8 @@ import {ErrorService} from "@isc/shared/service/error.service";
   styleUrl: './error.component.scss'
 })
 export class ErrorComponent {
+  protected readonly location = location;
+
   constructor(protected errors: ErrorService) {
   }
 }

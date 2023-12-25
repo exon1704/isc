@@ -1,7 +1,7 @@
-import {HttpErrorResponse} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {HttpHandlerError} from "@isc/core/error/http-handler-error";
-import {ErrorService} from "@isc/shared/service/error.service";
+import {Injectable} from "@angular/core";
+import {HttpErrorResponse} from "@angular/common/http";
+import {HttpHandlerError} from "@isc/core/widgets/error/http-handler-error";
+import {ErrorService} from "@isc/core/widgets/error/error.service";
 
 @Injectable({
   providedIn: 'root'

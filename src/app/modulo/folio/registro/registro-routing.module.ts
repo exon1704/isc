@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import {RouterModule, Routes} from "@angular/router";
 import {RegistroComponent} from "@isc/modulo/registro.component";
 
 const routes: Routes = [{

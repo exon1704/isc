@@ -1,4 +1,4 @@
-import {environment} from "../../../environments/environment";
+import {environment} from "@env/environment";
 
 export class UrlBase {
   private static readonly baseUrl = `${environment.hostBackend}/nova/v1`;

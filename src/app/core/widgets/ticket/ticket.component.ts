@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
-import {TicketData} from "@isc/core/ticket.data";
+import {TicketData} from "./ticket.data";
 
 @Component({
   selector: 'app-ticket',

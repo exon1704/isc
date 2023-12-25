@@ -1,21 +1,38 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from "rxjs";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ErrorComponent} from "@isc/core/error/error.component";
+import {HttpClient, HttpErrorResponse, HttpStatusCode} from "@angular/common/http";
+import {Header} from "@isc/core/title/header";
+import {ButtonModule} from "primeng/button";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {DropdownModule} from "primeng/dropdown";
+import {SharedModule} from "primeng/api";
+import {InputGroupModule} from "primeng/inputgroup";
+import {InputTextModule} from "primeng/inputtext";
+import {EditorModule} from "primeng/editor";
+import {RouterLink} from "@angular/router";
+import {DialogModule} from "primeng/dialog";
+import {TicketComponent} from "@isc/core/ticket/ticket.component";
+import {ContactoComponent} from "@isc/modulo/contacto/contacto.component";
 import {Unidad} from "@isc/api/unidad";
 import {Reporte} from "@isc/api/reporte";
 import {Estado} from "@isc/api/estado";
+import {TicketData} from "@isc/core/ticket/ticket.data";
+import {ErrorService} from "@isc/core/error/error.service";
+import {Subscription} from "rxjs";
+import {AdministrarHandlerService} from "@isc/modulo/service/administrar-handler.service";
 import {UnidadService} from "@isc/api/unidad.service";
 import {EstadoService} from "@isc/api/estado.service";
 import {FolioService} from "@isc/api/folio.service";
 import {ReporteService} from "@isc/api/reporte.service";
-import {accion, FolioUtils} from "@isc/toolkit/folio-utils";
-import {HttpErrorResponse, HttpStatusCode} from "@angular/common/http";
-import {ErrorService} from "@isc/shared/service/error.service";
-import {TicketData} from "@isc/core/ticket.data";
-import {AdministrarHandlerService} from '@isc/modulo/service/administrar-handler.service';
+import {accion, FolioUtils} from "@isc/core/commons/folio-utils";
 
 @Component({
-  selector: 'app-registro', templateUrl: './registro.component.html', styleUrl: './registro.component.scss'
+  selector: 'app-registro',
+  templateUrl: './registro.component.html',
+  styleUrl: './registro.component.scss',
+  standalone: true,
+  providers: [HttpClient],
+  imports: [Header, ErrorComponent, ButtonModule, ReactiveFormsModule, DropdownModule, SharedModule, InputGroupModule, InputTextModule, EditorModule, RouterLink, DialogModule, TicketComponent, ContactoComponent]
 })
 export class RegistroComponent implements OnInit, OnDestroy {
   formReporte: FormGroup
@@ -27,14 +44,14 @@ export class RegistroComponent implements OnInit, OnDestroy {
   deshabilitarFolio = true;
   visibleDialog: boolean;
   activarDetalles: boolean;
+  activarGenerales: boolean;
+  sUnidad: any;
   protected folio: TicketData
-
   protected errorService = inject(ErrorService)
   private areaSubscription: Subscription
   private unidadSubscription: Subscription
   private estadoSubscription: Subscription
   private folioSubscription: Subscription
-
   private adminHandlerService = inject(AdministrarHandlerService);
   private unidadService = inject(UnidadService);
   private estadoService = inject(EstadoService);
@@ -103,6 +120,10 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.activarDetalles = true
   }
 
+  abrirGenerales(): void {
+    this.activarGenerales = true
+  }
+
   private obtenerAreas() {
     this.areaSubscription = this.reporteService.obtenerReportesPorArea().subscribe({
       next: value => this.areas = value.data
@@ -125,12 +146,13 @@ export class RegistroComponent implements OnInit, OnDestroy {
 
   private eventoAreaSeleccion() {
     this.formReporte.get('area')?.valueChanges.subscribe(value => {
+      console.log(value)
+      this.formReporte.patchValue({'reporte': null})
       if (value) {
         this.reportes = value.reportes
         this.estadoFolioGenerador(value.area.nombre)
       } else {
         this.reportes = []
-        this.formReporte.patchValue({'reporte': null})
         this.deshabilitarFolio = true
       }
     })
