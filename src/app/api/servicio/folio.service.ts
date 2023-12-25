@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {UrlBase} from "@isc/api/url-base";
 import {RestResponse} from "@isc/api/rest-response";
+import {UrlBase} from "@isc/api/url-base";
 
 @Injectable({
   providedIn: 'root'

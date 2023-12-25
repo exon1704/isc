@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {of, tap} from "rxjs";
-import {UrlBase} from "@isc/api/url-base";
+import {UrlBase} from "../url-base";
 import {RestResponse} from "@isc/api/rest-response";
 
 @Injectable({

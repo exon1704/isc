@@ -1,26 +1,37 @@
-import {Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core'
-import {Subscription} from "rxjs";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DatePipe} from "@angular/common";
-import {Estado} from "@isc/api/estado";
-import {Folio} from "@isc/api/Folio";
+import {ButtonModule} from "primeng/button";
+import {RouterLink} from "@angular/router";
+import {Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {DatePipe, NgClass} from "@angular/common";
+import {Header} from "@isc/core/widgets/title/header";
+import {ErrorComponent} from "@isc/core/widgets/error/error.component";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {DropdownModule} from "primeng/dropdown";
+import {SharedModule} from "primeng/api";
+import {CalendarModule} from "primeng/calendar";
+import {InputGroupModule} from "primeng/inputgroup";
+import {InputTextModule} from "primeng/inputtext";
+import {Table, TableModule} from "primeng/table";
+import {PaginatorModule} from "primeng/paginator";
+import {ErrorService} from "@isc/core/widgets/error/error.service";
+import {UnidadService} from "@isc/api/unidad.service";
 import {Unidad} from "@isc/api/unidad";
 import {Area} from "@isc/api/area";
-import {ErrorService} from "@isc/shared/service/error.service";
+import {Estado} from "@isc/api/estado";
+import {Folio} from "@isc/api/folio";
 import {AdministrarHandlerService} from "@isc/modulo/service/administrar-handler.service";
-import {UnidadService} from "@isc/api/unidad.service";
 import {EstadoService} from "@isc/api/estado.service";
 import {FolioService} from "@isc/api/folio.service";
 import {AreaService} from "@isc/api/area.service";
-import {FiltroFolio} from "@isc/toolkit/filtro-folio";
-import {Table} from "primeng/table";
+import {Subscription} from "rxjs";
+import {FiltroFolio} from "@isc/core/commons/filtro-folio";
 
 @Component({
   providers: [DatePipe],
   selector: 'app-administrar',
   templateUrl: './administrar.component.html',
-
-  styleUrl: './administrar.component.scss'
+  styleUrl: './administrar.component.scss',
+  standalone: true,
+  imports: [Header, ErrorComponent, ButtonModule, RouterLink, ReactiveFormsModule, DropdownModule, SharedModule, NgClass, CalendarModule, InputGroupModule, InputTextModule, TableModule, PaginatorModule]
 })
 export class AdministrarComponent implements OnInit, OnDestroy {
   @ViewChild('inFiltro') filter!: ElementRef;
@@ -64,22 +75,14 @@ export class AdministrarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.areaSubscription) {
-      this.areaSubscription.unsubscribe()
-    }
-    if (this.estadoSubscription) {
-      this.estadoSubscription.unsubscribe()
-    }
-    if (this.unidadSubscription) {
-      this.unidadSubscription.unsubscribe()
-    }
-    if (this.folioSubscription) {
-      this.folioSubscription.unsubscribe()
-    }
+    this.areaSubscription?.unsubscribe()
+    this.estadoSubscription?.unsubscribe()
+    this.unidadSubscription?.unsubscribe()
+    this.folioSubscription?.unsubscribe()
   }
 
   ngOnInit() {
-
+    this.errorService.clearAll()
   }
 
   asignarMesConsulta() {
@@ -145,7 +148,6 @@ export class AdministrarComponent implements OnInit, OnDestroy {
   }
 
   protected obtenerFolio() {
-
     this.cargandoTabla = true
     this.folioService.obtenerPorFolio(this.formFolio?.get('folio')?.value).subscribe({
       next: value => {
@@ -160,6 +162,8 @@ export class AdministrarComponent implements OnInit, OnDestroy {
         console.log(value)
       }, error: err => {
         this.cargandoTabla = false
+        this.resetPaginador()
+        this.folios = []
       }, complete: () => {
         this.cargandoTabla = false
       }
@@ -180,6 +184,9 @@ export class AdministrarComponent implements OnInit, OnDestroy {
         }
       }, error: err => {
         this.cargandoTabla = false
+        this.resetPaginador()
+        this.folios = []
+        this.adminHandlerService.httpHandlerServiceError(err, "Folios de operación", true)
       }, complete: () => {
         this.cargandoTabla = false
       }

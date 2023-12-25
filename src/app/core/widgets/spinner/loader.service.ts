@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 
 @Injectable({
@@ -9,7 +9,8 @@ export class LoaderService {
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingSubject.asObservable();
 
-  constructor() { }
+  constructor() {
+  }
 
   showLoader() {
     if (this.apiCount === 0) {

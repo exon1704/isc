@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" baseProfile="basic" viewBox="0 0 48 48"><path fill="#c5cae9" d="M40,42H9V4h31V42z"/><rect width="3" height="3" x="13" y="17" fill="#7986cb"/><rect width="17" height="3" x="19" y="17" fill="#7986cb"/><rect width="3" height="3" x="13" y="23" fill="#7986cb"/><rect width="17" height="3" x="19" y="23" fill="#7986cb"/><rect width="3" height="3" x="13" y="29" fill="#7986cb"/><rect width="17" height="3" x="19" y="29" fill="#7986cb"/><rect width="23" height="3" x="13" y="9" fill="#7986cb"/><path fill="#43a047" d="M48,38c0,5.5-4.5,10-10,10s-10-4.5-10-10s4.5-10,10-10S48,32.5,48,38L48,38z"/><polygon fill="#dcedc8" points="42.5,33.4 36.8,39 34.1,36.3 32,38.5 36.8,43.3 44.6,35.5"/></svg>
+<svg baseProfile="basic" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <path d="M40,42H9V4h31V42z" fill="#c5cae9"/>
+  <rect fill="#7986cb" height="3" width="3" x="13" y="17"/>
+  <rect fill="#7986cb" height="3" width="17" x="19" y="17"/>
+  <rect fill="#7986cb" height="3" width="3" x="13" y="23"/>
+  <rect fill="#7986cb" height="3" width="17" x="19" y="23"/>
+  <rect fill="#7986cb" height="3" width="3" x="13" y="29"/>
+  <rect fill="#7986cb" height="3" width="17" x="19" y="29"/>
+  <rect fill="#7986cb" height="3" width="23" x="13" y="9"/>
+  <path d="M48,38c0,5.5-4.5,10-10,10s-10-4.5-10-10s4.5-10,10-10S48,32.5,48,38L48,38z" fill="#43a047"/>
+  <polygon fill="#dcedc8" points="42.5,33.4 36.8,39 34.1,36.3 32,38.5 36.8,43.3 44.6,35.5"/>
+</svg>

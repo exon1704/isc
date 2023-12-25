@@ -24,37 +24,32 @@
       "dom"
     ],
     "paths": {
+      "@isc/api/*": [
+        "app/api/*",
+        "app/api/data/*",
+        "app/api/servicio/*"
+      ],
+      "@isc/core/*": [
+        "app/core/*",
+        "app/core/widgets/*"
+      ],
       "@isc/layout/*": [
         "app/layout/navigation/*",
         "app/layout/topbar/*",
         "app/layout/*"
       ],
-      "@isc/core/*": [
-        "app/core/*",
-        "app/core/error/*",
-        "app/core/shared/components/ticket/*",
-        "app/core/shared/components/spinner/*",
-        "app/core/shared/components/error/*",
-        "app/core/shared/components/*"
+      "@isc/core/widgets/*": [
+        "app/core/widgets/*"
       ],
       "@env/*": [
-        "environment/*"
-      ],
-      "@isc/api/*": [
-        "app/api/data/*",
-        "app/api/servicio/*"
+        "environments/*"
       ],
       "@isc/modulo/*": [
-        "app/modulo/dashboard/*",
         "app/modulo/folio/administrar/*",
         "app/modulo/folio/registro/*",
-        "app/modulo/folio/*"
-      ],
-      "@isc/toolkit/*": [
-        "app/toolkit/*"
-      ],
-      "@isc/shared/*": [
-        "app/shared/*"
+        "app/modulo/generales/*",
+        "app/modulo/notfound/*",
+        "app/modulo/toolkit/*"
       ]
     }
   },

@@ -1,4 +1,4 @@
-import {Folio} from "@isc/api/Folio";
+import {Folio} from "@isc/api/folio";
 
 export enum accion {
   Registrar = 'registrar', Actualizar = 'actualizar',
@@ -15,7 +15,7 @@ export class FolioUtils {
     const a = z.getFullYear();
     const r = Math.floor(Math.random() * 4);
     // Concatena estos valores para formar un número
-    return 'F' + m + d + h + s + r
+    return 'F' + a + m + d + h + s + r
   }
 
   static construirDataFolio(tipo: accion, dataForm, folio: Folio) {

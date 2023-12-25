@@ -1,22 +1,19 @@
 import {NgModule} from '@angular/core';
-import {LocationStrategy, PathLocationStrategy} from "@angular/common";
-import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
-import {NotfoundComponent} from "./notfound/notfound.component";
-import {AppLayoutModule} from "@isc/layout/app.layout.module";
-import {SharedModule} from "@isc/shared/shared.module";
 import {BrowserModule} from "@angular/platform-browser";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {MessageService} from "primeng/api";
-import {SpinnerComponent} from "@isc/core/shared/components/spinner/spinner.component";
-import {HTTP_INTERCEPTORS} from "@angular/common/http";
-import {LoaderInterceptor} from "@isc/core/shared/interceptor/loader.interceptor";
-import {ProgressSpinnerModule} from "primeng/progressspinner";
+import {AppRoutingModule} from "./app-routing.module";
+import {AppLayoutModule} from "@isc/layout/app.layout.module";
+import {NotfoundComponent} from "@isc/modulo/notfound.component";
+import {SpinnerComponent} from "@isc/core/spinner/spinner.component";
+import {LocationStrategy, PathLocationStrategy} from "@angular/common";
+import {LoaderInterceptor} from "@isc/core/spinner/loader.interceptor";
 
 @NgModule({
-  declarations: [AppComponent, NotfoundComponent, SpinnerComponent],
-  imports: [SharedModule, BrowserModule, BrowserAnimationsModule, AppRoutingModule, AppLayoutModule, ProgressSpinnerModule],
-  providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}, MessageService, {
+  declarations: [AppComponent],
+  imports: [HttpClientModule, BrowserModule, BrowserAnimationsModule, AppRoutingModule, AppLayoutModule, NotfoundComponent, SpinnerComponent],
+  providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}, {
     provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true
   }],
   exports: [SpinnerComponent],
