@@ -1,65 +1,25 @@
-@defer {
-  <app-title-module color="bg-green-300"
-                    icon="nova documents_folder"
-                    subtitulo="Inicie el proceso de registro de reportes o genere folios internos de seguimiento"
-                    titulo="Registrar reporte"
-  ></app-title-module>
-  @defer (when errorService.errors.size > 0; prefetch when errorService.errors.size > 0) {
-    <app-error></app-error>
-  }
-  @if (errorService.errors.size == 0) {
+@defer {<app-title-module color="bg-green-300" icon="nova documents_folder" subtitulo="Inicie el proceso de registro de reportes o genere folios internos de seguimiento" titulo="Registrar reporte"></app-title-module>
+  @defer (when errorService.errors.size > 0; prefetch when errorService.errors.size > 0) {<app-error></app-error>}
+@if (errorService.errors.size == 0) {
     <div class="p-toolbar p-2 mt-4">
       <div class="p-toolbar-group-start">
-        <p-button [plain]="true" #generales [text]="true" icon="pi pi-book" label="Generales"
-                  (onClick)="abrirGenerales()"></p-button>
-        <p-button [plain]="true" [text]="true" icon="pi pi-tags" label="Folios en seguimiento"></p-button>
+        <p-button #btnGenerales icon="pi pi-book" label="Generales" styleClass="mr-1" [text]="true" [plain]="true" [disabled]="!formReporte.get('unidad').value" (onClick)="abrirGenerales()"></p-button>
+        <p-button [disabled]="!formReporte.get('unidad').value" icon="pi pi-tags" [text]="true" [plain]="true" label="Seguimientos"></p-button>
       </div>
     </div>
     <div class="border-round-md border-1 surface-border surface-section mt-2">
       <form (ngSubmit)="registrar()" [formGroup]="formReporte" class="formgrid grid p-4">
         <div class="field col-12 md:col-4">
           <label class="font-semibold is-required">Unidad</label>
-          <p-dropdown [filterFields]="['clave','nombre']" [filter]="true" [options]="unidades" [showClear]="true"
-                      filterBy="clave,nombre" formControlName="unidad"
-                      optionLabel="nombre" styleClass="w-full">
-            <ng-template pTemplate="selectedItem">
-              @if (formReporte.get('unidad')?.value) {
-                <div>
-                  {{ formReporte.get('unidad')?.value.clave }} {{ formReporte.get('unidad')?.value.nombre }}
-                </div>
-              }
-            </ng-template>
-            <ng-template let-unidad pTemplate="item">
-              <div class="w-full">
-                <div>{{ unidad["clave"] + " " + unidad["nombre"] }}</div>
-              </div>
-            </ng-template>
+          <p-dropdown [filterFields]="['clave','nombre']" [filter]="true" [options]="unidades" [showClear]="true" filterBy="clave,nombre" formControlName="unidad" optionLabel="nombre" styleClass="w-full">
+            <ng-template pTemplate="selectedItem">@if (formReporte.get('unidad')?.value) {<div>{{ formReporte.get('unidad')?.value.clave }} {{ formReporte.get('unidad')?.value.nombre }}</div>}</ng-template>
+            <ng-template let-unidad pTemplate="item"><div class="w-full"><div>{{ unidad["clave"] + " " + unidad["nombre"] }}</div></div></ng-template>
           </p-dropdown>
         </div>
-        <div class="field col-12 md:col-4">
-          <label class="is-required font-semibold" for="area">Área de seguimiento</label>
-          <p-dropdown
-            [options]="areas"
-            [showClear]="true"
-            formControlName="area"
-            inputId="area"
-            optionLabel="area.nombre"
-            styleClass="w-full">
-          </p-dropdown>
-        </div>
+        <div class="field col-12 md:col-4"><label class="is-required font-semibold" for="area">Área de seguimiento</label><p-dropdown [options]="areas" [showClear]="true" formControlName="area" inputId="area" optionLabel="area.nombre" styleClass="w-full"></p-dropdown></div>
         <div class="field col-12 md:col-4">
           <label class="is-required font-semibold" for="reporte">Reporte</label>
-          <p-dropdown
-            #cticket
-            [filter]="true"
-            [options]="reportes"
-            [showClear]="true"
-            filterBy="nombre"
-            formControlName="reporte"
-            inputId="reporte"
-            optionLabel="nombre"
-            styleClass="w-full">
-          </p-dropdown>
+          <p-dropdown #cticket [filter]="true" [options]="reportes" [showClear]="true" filterBy="nombre" formControlName="reporte" inputId="reporte" optionLabel="nombre" styleClass="w-full"></p-dropdown>
         </div>
         <div class="field col-12 md:col-4">
           <label class="is-required font-semibold" for="folio">Folio de seguimiento</label>
@@ -150,14 +110,10 @@
         </p-dialog>
       }
     </div>
-    @defer (when activarGenerales; prefetch on interaction(generales)) {
-      <p-dialog header="Header" [(visible)]="activarGenerales" [style]="{width: '70vw'}">
-        <app-contacto [generales]="sUnidad"></app-contacto>
-      </p-dialog>
+    @defer (when activarGenerales; prefetch on interaction(btnGenerales)) {
+      <p-dialog header="Generales" [(visible)]="activarGenerales" [style]="{width: '50vw'}" [breakpoints]="{ '680px': '90vw','1024':'70wv' }" [draggable]="false" [resizable]="false" [modal]="true"><app-contacto [generales]="generales"></app-contacto></p-dialog>
     }
   }
 } @loading {
-  <div class="preloader">
-    <div class="preloader-content"></div>
-  </div>
+  <div class="preloader"><div class="preloader-content"></div></div>
 }

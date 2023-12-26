@@ -1,4 +1,5 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy} from '@angular/core';
+import {Generales} from "@isc/api/generales";
 
 @Component({
   selector: 'app-contacto',
@@ -7,14 +8,10 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
   templateUrl: './contacto.component.html',
   styleUrl: './contacto.component.scss'
 })
-export class ContactoComponent implements OnInit, OnDestroy {
-  @Input() generales
+export class ContactoComponent implements OnDestroy {
+  @Input() generales: Generales
 
   ngOnDestroy(): void {
-
-  }
-
-  ngOnInit(): void {
 
   }
 

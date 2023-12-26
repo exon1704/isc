@@ -20,4 +20,8 @@ export class UnidadService {
       .pipe(tap(data => this.unidades = data));
   }
 
+  obtenerGenerales(idUnidad: number) {
+    return this.httpClient.get<RestResponse>(UrlBase.unidad.generales, {headers: this.header, params: {id: idUnidad}})
+  }
+
 }

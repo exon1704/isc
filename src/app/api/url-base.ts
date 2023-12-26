@@ -14,7 +14,8 @@ export class UrlBase {
   static readonly estados = `${UrlBase.baseUrl}/estado/estados`
   static readonly reportes = `${UrlBase.baseUrl}/reporte/reporte-areas`
   static readonly unidad = {
-    unidades: `${UrlBase.baseUrl}/unidad/unidades`
+    unidades: `${UrlBase.baseUrl}/unidad/unidades`,
+    generales: `${UrlBase.baseUrl}/unidad/generales`
   }
 
 }

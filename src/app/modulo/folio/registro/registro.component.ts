@@ -25,6 +25,7 @@ import {EstadoService} from "@isc/api/estado.service";
 import {FolioService} from "@isc/api/folio.service";
 import {ReporteService} from "@isc/api/reporte.service";
 import {accion, FolioUtils} from "@isc/core/commons/folio-utils";
+import {Generales} from "@isc/api/generales";
 
 @Component({
   selector: 'app-registro',
@@ -45,7 +46,10 @@ export class RegistroComponent implements OnInit, OnDestroy {
   visibleDialog: boolean;
   activarDetalles: boolean;
   activarGenerales: boolean;
-  sUnidad: any;
+  generales: Generales = {
+    unidad: undefined,
+    info: undefined
+  };
   protected folio: TicketData
   protected errorService = inject(ErrorService)
   private areaSubscription: Subscription
@@ -120,8 +124,23 @@ export class RegistroComponent implements OnInit, OnDestroy {
     this.activarDetalles = true
   }
 
-  abrirGenerales(): void {
-    this.activarGenerales = true
+  abrirGenerales() {
+    if (this.formReporte.get('unidad').value) {
+      this.unidadService.obtenerGenerales(this.formReporte.get('unidad').value.id).subscribe({
+          next: t => {
+            if (t.code == 200) {
+              this.generales = {
+                unidad: this.formReporte.get('unidad').value,
+                info: t.data
+              }
+              this.activarGenerales = true
+            }
+            console.log(this.generales)
+          },
+          error: err => this.activarGenerales = false
+        }
+      )
+    }
   }
 
   private obtenerAreas() {
@@ -132,14 +151,14 @@ export class RegistroComponent implements OnInit, OnDestroy {
 
   private obtenerUnidades() {
     this.unidadSubscription = this.unidadService.obtenerUnidades().subscribe({
-      next: (t) => this.unidades = t.data,
+      next: t => this.unidades = t.data,
       error: (err) => this.adminHandlerService.httpHandlerServiceError(err, 'Unidades', true)
     });
   }
 
   private obtenerEstados() {
     this.estadoSubscription = this.estadoService.obtenerEstado().subscribe({
-      next: (t) => this.estados = t.data,
+      next: t => this.estados = t.data,
       error: (err) => this.adminHandlerService.httpHandlerServiceError(err, 'Estados de operación', true)
     });
   }
