@@ -12,10 +12,10 @@ export class FolioUtils {
     const h = z.getHours();
     const d = z.getDate();
     const m = z.getMonth() + 1;
-    const a = z.getFullYear();
-    const r = Math.floor(Math.random() * 4);
+    const a = z.getFullYear().toString().substring(2)
+    const r = Math.floor(Math.random() * 100);
     // Concatena estos valores para formar un número
-    return 'F' + a + m + d + h + s + r
+    return ''+a+m+d+h+r
   }
 
   static construirDataFolio(tipo: accion, dataForm, folio: Folio) {
@@ -27,6 +27,7 @@ export class FolioUtils {
       reporte: dataForm.reporte,
       unidad: dataForm.unidad
     };
+    console.log(commonData)
     switch (tipo) {
       case accion.Registrar:
         return {

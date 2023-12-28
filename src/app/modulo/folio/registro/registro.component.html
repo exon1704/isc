@@ -1,9 +1,9 @@
-@defer {<app-title-module color="bg-green-300" icon="nova documents_folder" subtitulo="Inicie el proceso de registro de reportes o genere folios internos de seguimiento" titulo="Registrar reporte"></app-title-module>
+@defer {<app-title-module color="bg-green-300" icon="nova onlyoffice" subtitulo="Inicie el proceso de registro de reportes o genere folios internos de seguimiento" titulo="Registrar reporte"></app-title-module>
   @defer (when errorService.errors.size > 0; prefetch when errorService.errors.size > 0) {<app-error></app-error>}
 @if (errorService.errors.size == 0) {
     <div class="p-toolbar p-2 mt-4">
       <div class="p-toolbar-group-start">
-        <p-button #btnGenerales icon="pi pi-book" label="Generales" styleClass="mr-1" [text]="true" [plain]="true" [disabled]="!formReporte.get('unidad').value" (onClick)="abrirGenerales()"></p-button>
+        <p-button #btnGenerales icon="pi pi-building" label="Generales" styleClass="mr-1" [text]="true" [plain]="true" [disabled]="!formReporte.get('unidad').value" (onClick)="abrirGenerales()"></p-button>
         <p-button [disabled]="!formReporte.get('unidad').value" icon="pi pi-tags" [text]="true" [plain]="true" label="Seguimientos"></p-button>
       </div>
     </div>

@@ -1,9 +1,9 @@
-.estado-reporte {
+.reporte {
   border-radius: var(--border-radius);
   padding: .25em .5rem;
+  font-size:12px;
 }
-
-.estado-reporte {
+.reporte {
   &.estado-abierto {
     background-color: var(--green-500);
     color: white;
@@ -20,7 +20,7 @@
   }
 
   &.estado-cancelado {
-    background-color: var(--red-400);
+    background-color: var(--red-600);
     color: var(--primary-color-text);
   }
 }
