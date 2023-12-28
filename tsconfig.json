@@ -47,6 +47,7 @@
       "@isc/modulo/*": [
         "app/modulo/folio/administrar/*",
         "app/modulo/folio/registro/*",
+        "app/modulo/folio/detalles/*",
         "app/modulo/generales/*",
         "app/modulo/notfound/*",
         "app/modulo/toolkit/*"

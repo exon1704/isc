@@ -3,7 +3,7 @@ $gutter: 1rem; //for primeflex grid system
 @import "primeng/resources/primeng.min.css";
 @import "primeflex/primeflex.min.css";
 @import "primeicons/primeicons.css";
-@import "assets/icons/fluent-color/icons.scss";
+@import "assets/icons/fluent-color/icons";
 @import "assets/layout/styles/estados.scss";
 
 :root {
@@ -15,4 +15,10 @@ $gutter: 1rem; //for primeflex grid system
   margin-left: 3px;
   color: red;
   font-weight: bold;
+}
+
+.button-default {
+  background-color: #D5DBDB;
+  color: black;
+  border: none;
 }

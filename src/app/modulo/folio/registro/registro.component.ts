@@ -28,160 +28,162 @@ import {accion, FolioUtils} from "@isc/core/commons/folio-utils";
 import {Generales} from "@isc/api/generales";
 
 @Component({
-  selector: 'app-registro',
-  templateUrl: './registro.component.html',
-  styleUrl: './registro.component.scss',
-  standalone: true,
-  providers: [HttpClient],
-  imports: [Header, ErrorComponent, ButtonModule, ReactiveFormsModule, DropdownModule, SharedModule, InputGroupModule, InputTextModule, EditorModule, RouterLink, DialogModule, TicketComponent, ContactoComponent]
+   selector: 'app-registro',
+   templateUrl: './registro.component.html',
+   styleUrl: './registro.component.scss',
+   standalone: true,
+   providers: [HttpClient],
+   imports: [Header, ErrorComponent, ButtonModule, ReactiveFormsModule, DropdownModule, SharedModule, InputGroupModule, InputTextModule, EditorModule, DialogModule, TicketComponent, ContactoComponent, RouterLink]
 })
 export class RegistroComponent implements OnInit, OnDestroy {
-  formReporte: FormGroup
-  unidades: Unidad[] | undefined;
-  areas: Reporte[] | undefined;
-  reportes: Reporte[] | undefined;
-  estados: Estado[] | undefined;
-  esperar: boolean
-  deshabilitarFolio = true;
-  visibleDialog: boolean;
-  activarDetalles: boolean;
-  activarGenerales: boolean;
-  generales: Generales = {
-    unidad: undefined,
-    info: undefined
-  };
-  protected folio: TicketData
-  protected errorService = inject(ErrorService)
-  private areaSubscription: Subscription
-  private unidadSubscription: Subscription
-  private estadoSubscription: Subscription
-  private folioSubscription: Subscription
-  private adminHandlerService = inject(AdministrarHandlerService);
-  private unidadService = inject(UnidadService);
-  private estadoService = inject(EstadoService);
-  private folioService = inject(FolioService);
-  private reporteService = inject(ReporteService);
+   formReporte: FormGroup
+   unidades: Unidad[] | undefined;
+   areas: Reporte[] | undefined;
+   reportes: Reporte[] | undefined;
+   estados: Estado[] | undefined;
+   esperar: boolean
+   deshabilitarFolio = true;
+   visibleDialog: boolean;
+   activarDetalles: boolean;
+   activarGenerales: boolean;
+   generales: Generales = {
+      unidad: undefined,
+      info: undefined
+   };
+   protected folio: TicketData
+   protected errorService = inject(ErrorService)
+   private areaSubscription: Subscription
+   private unidadSubscription: Subscription
+   private estadoSubscription: Subscription
+   private folioSubscription: Subscription
+   private adminHandlerService = inject(AdministrarHandlerService);
+   private unidadService = inject(UnidadService);
+   private estadoService = inject(EstadoService);
+   private folioService = inject(FolioService);
+   private reporteService = inject(ReporteService);
 
-  constructor(private fb: FormBuilder) {
-    this.formReporte = this.fb.group({
-      unidad: [null, Validators.required],
-      area: [null, Validators.required],
-      reporte: [null, Validators.required],
-      agente: [null],
-      estado: [null],
-      detalles: [null],
-      folio: [null, Validators.required]
-    })
-  }
-
-  ngOnDestroy(): void {
-    this.areaSubscription?.unsubscribe();
-    this.estadoSubscription?.unsubscribe();
-    this.unidadSubscription?.unsubscribe();
-    this.folioSubscription?.unsubscribe();
-  }
-
-  ngOnInit(): void {
-    this.obtenerUnidades();
-    this.obtenerEstados();
-    this.obtenerAreas();
-    this.eventoAreaSeleccion()
-  }
-
-  async registrar() {
-    this.esperar = true
-    if (this.formReporte.invalid) {
-      this.formReporte.markAllAsTouched()
-    } else {
-      const data = FolioUtils.construirDataFolio(accion.Registrar, this.formReporte.value, null)
-      this.folioSubscription = this.folioService.registrar(data).subscribe({
-        next: value => {
-          if (value.code == 200) {
-            this.folio = {
-              folio: this.formReporte.get('folio').value,
-              estado: this.formReporte.get('estado').value ? this.formReporte.get('estado').value.nombre : '',
-              unidad: this.formReporte.get('unidad').value.clave + ' ' + this.formReporte.get('unidad').value.nombre,
-              area: this.formReporte.get('area')?.value.area.nombre,
-              agente: this.formReporte.get('agente').value ? this.formReporte.get('agente').value : '',
-              reporte: this.formReporte.get('reporte').value.nombre
-            }
-            this.visibleDialog = true
-          }
-        }, complete: () => this.esperar = false, error: (err: HttpErrorResponse) => this.handleRegistrationError(err)
+   constructor(private fb: FormBuilder) {
+      this.formReporte = this.fb.group({
+         unidad: [null, Validators.required],
+         area: [null, Validators.required],
+         reporte: [null, Validators.required],
+         agente: [null],
+         estado: [null],
+         detalles: [null],
+         folio: [null, Validators.required]
       })
-    }
-  }
+   }
 
-  estadoFolioGenerador(nombre: string) {
-    this.deshabilitarFolio = ['mesa de servicio', 'telmex', 'cfe'].includes(nombre.toLowerCase());
-  }
+   ngOnDestroy(): void {
+      this.areaSubscription?.unsubscribe();
+      this.estadoSubscription?.unsubscribe();
+      this.unidadSubscription?.unsubscribe();
+      this.folioSubscription?.unsubscribe();
+   }
 
-  generarFolio() {
-    this.formReporte.patchValue({folio: FolioUtils.generarFolio()})
-  }
+   ngOnInit(): void {
+      this.obtenerUnidades();
+      this.obtenerEstados();
+      this.obtenerAreas();
+      this.eventoAreaSeleccion()
+   }
 
-  evtDetalles() {
-    this.activarDetalles = true
-  }
-
-  abrirGenerales() {
-    if (this.formReporte.get('unidad').value) {
-      this.unidadService.obtenerGenerales(this.formReporte.get('unidad').value.id).subscribe({
-          next: t => {
-            if (t.code == 200) {
-              this.generales = {
-                unidad: this.formReporte.get('unidad').value,
-                info: t.data
-              }
-              this.activarGenerales = true
-            }
-            console.log(this.generales)
-          },
-          error: err => this.activarGenerales = false
-        }
-      )
-    }
-  }
-
-  private obtenerAreas() {
-    this.areaSubscription = this.reporteService.obtenerReportesPorArea().subscribe({
-      next: value => this.areas = value.data
-    })
-  }
-
-  private obtenerUnidades() {
-    this.unidadSubscription = this.unidadService.obtenerUnidades().subscribe({
-      next: t => this.unidades = t.data,
-      error: (err) => this.adminHandlerService.httpHandlerServiceError(err, 'Unidades', true)
-    });
-  }
-
-  private obtenerEstados() {
-    this.estadoSubscription = this.estadoService.obtenerEstado().subscribe({
-      next: t => this.estados = t.data,
-      error: (err) => this.adminHandlerService.httpHandlerServiceError(err, 'Estados de operación', true)
-    });
-  }
-
-  private eventoAreaSeleccion() {
-    this.formReporte.get('area')?.valueChanges.subscribe(value => {
-      console.log(value)
-      this.formReporte.patchValue({'reporte': null})
-      if (value) {
-        this.reportes = value.reportes
-        this.estadoFolioGenerador(value.area.nombre)
+   async registrar() {
+      this.esperar = true
+      if (this.formReporte.invalid) {
+         this.formReporte.markAllAsTouched()
       } else {
-        this.reportes = []
-        this.deshabilitarFolio = true
+         const data = FolioUtils.construirDataFolio(accion.Registrar, this.formReporte.value, null)
+         this.folioSubscription = this.folioService.registrar(data).subscribe({
+            next: value => {
+               if (value.code == 200) {
+                  this.folio = {
+                     folio: this.formReporte.get('folio').value,
+                     estado: this.formReporte.get('estado').value ? this.formReporte.get('estado').value.nombre : '',
+                     unidad: this.formReporte.get('unidad').value.clave + ' ' + this.formReporte.get('unidad').value.nombre,
+                     area: this.formReporte.get('area')?.value.area.nombre,
+                     agente: this.formReporte.get('agente').value ? this.formReporte.get('agente').value : '',
+                     reporte: this.formReporte.get('reporte').value.nombre,
+                  }
+                  this.visibleDialog = true
+               }
+            },
+            complete: () => this.esperar = false,
+            error: (err: HttpErrorResponse) => this.handleRegistrationError(err)
+         })
       }
-    })
-  }
+   }
 
-  private handleRegistrationError(err: HttpErrorResponse) {
-    this.esperar = false;
-    if (err.status === HttpStatusCode.Conflict) {
-      this.formReporte.get('folio').setErrors({'invalido': true});
-      console.log(this.formReporte.get('folio').hasError('invalido'));
-    }
-  }
+   estadoFolioGenerador(nombre: string) {
+      this.deshabilitarFolio = ['mesa de servicio', 'telmex', 'cfe'].includes(nombre.toLowerCase());
+   }
+
+   generarFolio() {
+      this.formReporte.patchValue({folio: FolioUtils.generarFolio()})
+   }
+
+   evtDetalles() {
+      this.activarDetalles = true
+   }
+
+   abrirGenerales() {
+      if (this.formReporte.get('unidad').value) {
+         this.unidadService.obtenerGenerales(this.formReporte.get('unidad').value.id).subscribe({
+               next: t => {
+                  if (t.code == 200) {
+                     this.generales = {
+                        unidad: this.formReporte.get('unidad').value,
+                        info: t.data
+                     }
+                     this.activarGenerales = true
+                  }
+                  console.log(this.generales)
+               },
+               error: () => this.activarGenerales = false
+            }
+         )
+      }
+   }
+
+   private obtenerAreas() {
+      this.areaSubscription = this.reporteService.obtenerReportesPorArea().subscribe({
+         next: value => this.areas = value.data
+      })
+   }
+
+   private obtenerUnidades() {
+      this.unidadSubscription = this.unidadService.obtenerUnidades().subscribe({
+         next: t => this.unidades = t.data,
+         error: (err) => this.adminHandlerService.httpHandlerServiceError(err, 'Unidades', true)
+      });
+   }
+
+   private obtenerEstados() {
+      this.estadoSubscription = this.estadoService.obtenerEstado().subscribe({
+         next: t => this.estados = t.data,
+         error: (err) => this.adminHandlerService.httpHandlerServiceError(err, 'Estados de operación', true)
+      });
+   }
+
+   private eventoAreaSeleccion() {
+      this.formReporte.get('area')?.valueChanges.subscribe(value => {
+         console.log(value)
+         this.formReporte.patchValue({'reporte': null})
+         if (value) {
+            this.reportes = value.reportes
+            this.estadoFolioGenerador(value.area.nombre)
+         } else {
+            this.reportes = []
+            this.deshabilitarFolio = true
+         }
+      })
+   }
+
+   private handleRegistrationError(err: HttpErrorResponse) {
+      this.esperar = false;
+      if (err.status === HttpStatusCode.Conflict) {
+         this.formReporte.get('folio').setErrors({'invalido': true});
+         console.log(this.formReporte.get('folio').hasError('invalido'));
+      }
+   }
 }

@@ -8,6 +8,7 @@ export class UrlBase {
   };
   static readonly folio = {
     folio: `${UrlBase.baseUrl}/folio/folio`,
+    detalles: `${UrlBase.baseUrl}/folio/detalles`,
     filtro: `${UrlBase.baseUrl}/folio/filtro`,
     guardar: `${UrlBase.baseUrl}/folio/guardar`,
   }
