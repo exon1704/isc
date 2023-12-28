@@ -140,9 +140,11 @@
                 </ng-template>
                 <ng-template let-data pTemplate="body">
                     <tr>
-                        <td class="flex flex-column">
-                            <div class="font-bold text-lg">{{ data.folio }}</div>
-                            <div class="">{{ data.reporte.nombre }}</div>
+                        <td>
+                            <div class="flex flex-column">
+                                <div class="font-bold text-lg">{{ data.folio }}</div>
+                                <div class="">{{ data.reporte.nombre }}</div>
+                            </div>
                         </td>
                         <td>
                             <span [class]="'estado-'+data.estado.nombre?.toLowerCase()"
