@@ -16,7 +16,6 @@ import {ContactoComponent} from "@isc/modulo/contacto/contacto.component";
 import {Unidad} from "@isc/api/unidad";
 import {Reporte} from "@isc/api/reporte";
 import {Estado} from "@isc/api/estado";
-import {TicketData} from "@isc/core/ticket/ticket.data";
 import {ErrorService} from "@isc/core/error/error.service";
 import {Subscription} from "rxjs";
 import {AdministrarHandlerService} from "@isc/modulo/service/administrar-handler.service";
@@ -26,6 +25,7 @@ import {FolioService} from "@isc/api/folio.service";
 import {ReporteService} from "@isc/api/reporte.service";
 import {accion, FolioUtils} from "@isc/core/commons/folio-utils";
 import {Generales} from "@isc/api/generales";
+import {Ticket} from "@isc/core/ticket/ticket";
 
 @Component({
    selector: 'app-registro',
@@ -50,7 +50,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
       unidad: undefined,
       info: undefined
    };
-   protected folio: TicketData
+   protected ticket: Ticket
    protected errorService = inject(ErrorService)
    private areaSubscription: Subscription
    private unidadSubscription: Subscription
@@ -97,14 +97,15 @@ export class RegistroComponent implements OnInit, OnDestroy {
          this.folioSubscription = this.folioService.registrar(data).subscribe({
             next: value => {
                if (value.code == 200) {
-                  this.folio = {
+                  this.ticket = {
                      folio: this.formReporte.get('folio').value,
-                     estado: this.formReporte.get('estado').value ? this.formReporte.get('estado').value.nombre : '',
-                     unidad: this.formReporte.get('unidad').value.clave + ' ' + this.formReporte.get('unidad').value.nombre,
-                     area: this.formReporte.get('area')?.value.area.nombre,
-                     agente: this.formReporte.get('agente').value ? this.formReporte.get('agente').value : '',
                      reporte: this.formReporte.get('reporte').value.nombre,
-                  }
+                     data: [
+                        {title:'Unidad',content: this.formReporte.get('unidad').value.clave + ' ' + this.formReporte.get('unidad').value.nombre},
+                        {title: 'Area de seguimiento', content: this.formReporte.get('area')?.value.area.nombre},
+                        {title: 'Estado', content: this.formReporte.get('estado').value ? this.formReporte.get('estado').value.nombre : ''},
+                        {title:'Atiende',content:this.formReporte.get('agente').value ? this.formReporte.get('agente').value : ''}
+                     ]}
                   this.visibleDialog = true
                }
             },

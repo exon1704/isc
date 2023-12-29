@@ -25,9 +25,9 @@ import {AreaService} from "@isc/api/area.service";
 import {Subscription} from "rxjs";
 import {FiltroFolio} from "@isc/core/commons/filtro-folio";
 import {SplitButtonModule} from "primeng/splitbutton";
-import {TicketData} from "@isc/core/ticket/ticket.data";
-import {TicketComponent} from "@isc/core/ticket/ticket.component";
 import {SidebarModule} from "primeng/sidebar";
+import {Ticket} from "@isc/core/ticket/ticket";
+import {TicketComponent} from "@isc/core/ticket/ticket.component";
 
 @Component({
    providers: [DatePipe],
@@ -35,14 +35,14 @@ import {SidebarModule} from "primeng/sidebar";
    templateUrl: './administrar.component.html',
    styleUrl: './administrar.component.scss',
    standalone: true,
-   imports: [Header, ErrorComponent, ButtonModule, RouterLink, ReactiveFormsModule, DropdownModule, SharedModule, NgClass, CalendarModule, InputGroupModule, InputTextModule, TableModule, PaginatorModule, SplitButtonModule, TicketComponent, SidebarModule]
+   imports: [Header, ErrorComponent, ButtonModule, RouterLink, ReactiveFormsModule, DropdownModule, SharedModule, NgClass, CalendarModule, InputGroupModule, InputTextModule, TableModule, PaginatorModule, SplitButtonModule, SidebarModule, TicketComponent]
 })
 export class AdministrarComponent implements OnInit, OnDestroy {
    @ViewChild('inFiltro') filter!: ElementRef;
    paginador = {
       first: 0, rows: 100, page: 0, totalElements: 0, pageCount: 0
    }
-   protected generales: TicketData
+
    // Formularios
    formFiltro!: FormGroup
    formFecha!: FormGroup
@@ -70,6 +70,7 @@ export class AdministrarComponent implements OnInit, OnDestroy {
 
    items: MenuItem[];
    activarDetalleFolio: boolean;
+   ticket: Ticket;
 
    constructor(private builder: FormBuilder, private datePipe: DatePipe, private router: Router) {
       this.items = [{
@@ -139,15 +140,19 @@ export class AdministrarComponent implements OnInit, OnDestroy {
       this.folioSubscription = this.folioService.obtenerDetalles(data).subscribe(
          {
             next: r => {
-               this.generales = {
-                  folio: r.data.folio,
-                  reporte: r.data.reporte.nombre,
-                  unidad: r.data.unidad.clave + ' ' + r.data.unidad.nombre,
-                  area: r.data.reporte.area.nombre,
-                  agente: r.data.agente == null ? '' : r.data.agente,
+               this.ticket = {
+                  folio:r.data.folio,
+                  reporte:r.data.reporte.nombre,
                   nota: r.data.nota,
-                  fecha: r.data.fecha,
-                  estado: r.data.estado.nombre
+                  data: [{title: 'Unidad', content: r.data.unidad.clave + ' ' + r.data.unidad.nombre},
+                     {title: 'Área de seguimiento', content: r.data.reporte.area.nombre},
+                     {title: 'Agente', content: r.data.agente == null ? '' : r.data.agente},
+                     {
+                        title: 'Estado',
+                        content: r.data.estado.nombre,
+                        style: 'reporte estado-' + r.data.estado.nombre.toLowerCase()
+                     },
+                     {title: 'Fecha de registro', content: r.data.fecha}]
                }
                this.activarDetalleFolio = true
             }

@@ -1,17 +1,17 @@
 import {Component, Input} from '@angular/core';
-import {TicketData} from "./ticket.data";
 import {EditorModule} from "primeng/editor";
+import {Ticket} from "@isc/core/ticket/ticket";
+import {NgClass, NgStyle} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 
 @Component({
    selector: 'app-ticket',
    standalone: true,
-   imports: [EditorModule, FormsModule],
+   imports: [EditorModule, NgStyle, FormsModule, NgClass],
    templateUrl: './ticket.component.html',
    styleUrl: './ticket.component.scss'
 })
 export class TicketComponent {
-   @Input() folio: TicketData
-
+   @Input() ticket: Ticket
 
 }
