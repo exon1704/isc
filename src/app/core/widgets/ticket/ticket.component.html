@@ -22,7 +22,7 @@
         </div>
         @defer (when ticket.nota && ticket.nota !== '') {
             @if (ticket.nota && ticket.nota !== '') {
-                <p-editor [readonly]="true" styleClass="my-3 m-4" [style]="{ height: '335px' }"
+                <p-editor [readonly]="true" styleClass="my-3" [style]="{ height: '300px' }"
                           ngModel="{{ticket.nota}}">
                     <ng-template pTemplate="header">
                         <div class="flex my-2"><i class="pi pi-ellipsis-v mx-2"></i>Detalles del reporte</div>
