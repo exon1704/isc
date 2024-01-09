@@ -14,31 +14,31 @@
             @if (ticket.unidad && ticket.unidad.trim() !== '') {
                 <div class="flex justify-content-between border-bottom-1 surface-border align-items-center py-2">
                     <div>Unidad</div>
-                    <div class="text-left">{{ ticket.unidad }}</div>
+                    <div class="text-right">{{ ticket.unidad }}</div>
                 </div>
             }
             @if (ticket.area && ticket.area.trim() !== '') {
                 <div class="flex justify-content-between border-bottom-1 surface-border align-items-center py-2">
                     <div>Área de seguimiento</div>
-                    <div class="text-left">{{ ticket.area }}</div>
+                    <div class="text-right">{{ ticket.area }}</div>
                 </div>
             }
             @if (ticket.atiende && ticket.atiende.trim() !== '') {
                 <div class="flex justify-content-between border-bottom-1 surface-border align-items-center py-2">
                     <div>Atiende</div>
-                    <div class="text-left">{{ ticket.atiende }}</div>
+                    <div class="text-right">{{ ticket.atiende }}</div>
                 </div>
             }
             @if (ticket.estado && ticket.estado.trim() !== '') {
                 <div class="flex justify-content-between border-bottom-1 surface-border align-items-center py-2">
                     <div>Estado</div>
-                    <div class="text-left">{{ ticket.estado }}</div>
+                    <div class="text-right">{{ ticket.estado }}</div>
                 </div>
             }
             @if (ticket.fecha && ticket.fecha.trim() !== '') {
                 <div class="flex justify-content-between border-bottom-1 surface-border align-items-center py-2">
                     <div>Fecha de registro</div>
-                    <div class="text-left">{{ ticket.fecha }}</div>
+                    <div class="text-right">{{ ticket.fecha }}</div>
                 </div>
             }
         </div>
