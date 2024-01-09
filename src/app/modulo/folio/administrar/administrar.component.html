@@ -68,9 +68,8 @@
                         </p-dropdown>
                     </div>
                     <div class="field col-12 flex justify-content-center gap-2">
-                        <p-button (onClick)="obtenerFoliosPorFiltro()" label="Aplicar"></p-button>
-                        <p-button (onClick)="resetFiltro()" [outlined]="true" icon="pi pi-eraser"
-                                  severity="secondary"></p-button>
+                        <button pButton (click)="obtenerFoliosPorFiltro()" label="Aplicar"></button>
+                        <button pButton (click)="resetFiltro()" class="p-button-outlined" icon="pi pi-eraser"></button>
                     </div>
                 </form>
             </div>
@@ -114,7 +113,7 @@
                                class="w-13rem"
                                pInputText placeholder="Buscar en resultado" type="text"/>
                     </span>
-                        <p-button (click)="resetTabla(dt)" [outlined]="true" icon="pi pi-replay"></p-button>
+                        <button pButton (click)="resetTabla(dt)" class="p-button-outlined" icon="pi pi-replay"></button>
 
                     </div>
                 </ng-template>
@@ -147,8 +146,8 @@
                             </div>
                         </td>
                         <td>
-                            <span [class]="'estado-'+data.estado.nombre?.toLowerCase()"
-                                  class="font-semibold reporte">{{ data.estado.nombre }}</span>
+                            <span [class]="data.estado.nombre?.toLowerCase()"
+                                  class="font-semibold estado">{{ data.estado.nombre }}</span>
                         </td>
                         <td>{{ data.reporte.area.nombre }}</td>
                         <td>{{ data.unidad.clave + ' ' + data.unidad.nombre }}</td>
@@ -197,7 +196,7 @@
     <p-sidebar [(visible)]="activarDetalleFolio" position="right" styleClass="w-30rem">
         <ng-template pTemplate="header">
             <div class="flex gap-1">
-                <button pButton  class="button-default" icon="pi pi-history"></button>
+                <button pButton class="button-default" icon="pi pi-history"></button>
                 <button pButton class="button-default" icon="pi pi-pencil"></button>
                 <button pButton label="Cerrar folio" icon="pi pi-minus-circle"></button>
             </div>
