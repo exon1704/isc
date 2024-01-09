@@ -25,7 +25,7 @@ import {FolioService} from "@isc/api/folio.service";
 import {ReporteService} from "@isc/api/reporte.service";
 import {accion, FolioUtils} from "@isc/core/commons/folio-utils";
 import {Generales} from "@isc/api/generales";
-import {Ticket} from "@isc/core/ticket/ticket";
+import {Ticket} from "@isc/core/commons/ticket";
 
 @Component({
    selector: 'app-registro',
@@ -100,12 +100,11 @@ export class RegistroComponent implements OnInit, OnDestroy {
                   this.ticket = {
                      folio: this.formReporte.get('folio').value,
                      reporte: this.formReporte.get('reporte').value.nombre,
-                     data: [
-                        {title:'Unidad',content: this.formReporte.get('unidad').value.clave + ' ' + this.formReporte.get('unidad').value.nombre},
-                        {title: 'Area de seguimiento', content: this.formReporte.get('area')?.value.area.nombre},
-                        {title: 'Estado', content: this.formReporte.get('estado').value ? this.formReporte.get('estado').value.nombre : ''},
-                        {title:'Atiende',content:this.formReporte.get('agente').value ? this.formReporte.get('agente').value : ''}
-                     ]}
+                     unidad:this.formReporte.get('unidad').value.clave + ' ' + this.formReporte.get('unidad').value.nombre,
+                     area: this.formReporte.get('area')?.value.area.nombre,
+                     estado: this.formReporte.get('estado').value ? this.formReporte.get('estado').value.nombre : '',
+                     atiende:this.formReporte.get('agente').value ? this.formReporte.get('agente').value : ''
+                  }
                   this.visibleDialog = true
                }
             },
