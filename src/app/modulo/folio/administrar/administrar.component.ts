@@ -26,8 +26,8 @@ import {Subscription} from "rxjs";
 import {FiltroFolio} from "@isc/core/commons/filtro-folio";
 import {SplitButtonModule} from "primeng/splitbutton";
 import {SidebarModule} from "primeng/sidebar";
-import {Ticket} from "@isc/core/ticket/ticket";
 import {TicketComponent} from "@isc/core/ticket/ticket.component";
+import {Ticket} from "@isc/core/commons/ticket";
 
 @Component({
    providers: [DatePipe],
@@ -55,6 +55,9 @@ export class AdministrarComponent implements OnInit, OnDestroy {
 
    cargandoTabla: boolean = true;
    panelFiltro: boolean = false
+   items: MenuItem[];
+   activarDetalleFolio: boolean;
+   ticket: Ticket;
    protected errorService = inject(ErrorService);
    // Subscriptores y observables
    private adminHandlerService = inject(AdministrarHandlerService)
@@ -68,15 +71,9 @@ export class AdministrarComponent implements OnInit, OnDestroy {
    private folioSubscription: Subscription
    private mes: Date;
 
-   items: MenuItem[];
-   activarDetalleFolio: boolean;
-   ticket: Ticket;
-
    constructor(private builder: FormBuilder, private datePipe: DatePipe, private router: Router) {
       this.items = [{
-         label: 'Seguimiento',
-         icon: 'pi pi-file-edit',
-         command: () => {
+         label: 'Seguimiento', icon: 'pi pi-file-edit', command: () => {
             console.log('Seguimiento')
          }
       }];
@@ -137,27 +134,21 @@ export class AdministrarComponent implements OnInit, OnDestroy {
    }
 
    editar(data: string) {
-      this.folioSubscription = this.folioService.obtenerDetalles(data).subscribe(
-         {
-            next: r => {
-               this.ticket = {
-                  folio:r.data.folio,
-                  reporte:r.data.reporte.nombre,
-                  nota: r.data.nota,
-                  data: [{title: 'Unidad', content: r.data.unidad.clave + ' ' + r.data.unidad.nombre},
-                     {title: 'Área de seguimiento', content: r.data.reporte.area.nombre},
-                     {title: 'Agente', content: r.data.agente == null ? '' : r.data.agente},
-                     {
-                        title: 'Estado',
-                        content: r.data.estado.nombre,
-                        style: 'reporte estado-' + r.data.estado.nombre.toLowerCase()
-                     },
-                     {title: 'Fecha de registro', content: r.data.fecha}]
-               }
-               this.activarDetalleFolio = true
+      this.folioSubscription = this.folioService.obtenerDetalles(data).subscribe({
+         next: r => {
+            this.ticket = {
+               folio: r.data.folio,
+               reporte: r.data.reporte.nombre,
+               nota: r.data.nota,
+               unidad: r.data.unidad.clave + ' ' + r.data.unidad.nombre,
+               area: r.data.reporte.area.nombre,
+               atiende: r.data.agente == null ? '' : r.data.agente,
+               estado: r.data.estado.nombre,
+               fecha: r.data.fecha
             }
+            this.activarDetalleFolio = true
          }
-      )
+      })
    }
 
    eliminar(data: any) {
@@ -181,6 +172,10 @@ export class AdministrarComponent implements OnInit, OnDestroy {
       this.paginador.totalElements = 0
       this.paginador.first = 0
       this.paginador.pageCount = 0
+   }
+
+   nuevoFolio() {
+      this.router.navigate(['/registrar']);
    }
 
    protected obtenerFolio() {
@@ -255,9 +250,5 @@ export class AdministrarComponent implements OnInit, OnDestroy {
             this.adminHandlerService.httpHandlerServiceError(err, 'Estados de operación', true);
          }
       });
-   }
-
-   nuevoFolio() {
-      this.router.navigate(['/registrar']);
    }
 }
