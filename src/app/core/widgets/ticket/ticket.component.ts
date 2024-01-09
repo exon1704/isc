@@ -1,8 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {EditorModule} from "primeng/editor";
-import {Ticket} from "@isc/core/ticket/ticket";
 import {NgClass, NgStyle} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import {Ticket} from "@isc/core/commons/ticket";
 
 @Component({
    selector: 'app-ticket',
