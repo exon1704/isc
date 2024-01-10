@@ -33,7 +33,7 @@ export class FolioUtils {
    }
 
    static construirDataFolio(tipo: accion, dataForm, folio: Folio) {
-      let commonData = {
+      return {
          agente: dataForm.agente,
          estado: dataForm.estado,
          folio: dataForm.folio,
@@ -42,6 +42,5 @@ export class FolioUtils {
          unidad: dataForm.unidad,
          id: accion.ACTUALIZAR ? folio.id : 0
       };
-
    }
 }
