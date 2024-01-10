@@ -1,57 +1,56 @@
-@if (folio) {
-    <div class="relative text-center ticket surface-200 border-blue-700 pb-3 border-round-2xl mt-4 ">
-        <div class="ticket-icon relative border-round-2xl">
-            <div class="message-icon nova onlyoffice ticket-element w-3rem h-3rem  p-5"></div>
-        </div>
-        <div class="flex flex-row mx-4 gap-3 justify-content-between border-bottom-2 mb-3 pb-4 border-dashed border-none surface-border">
-            <div class="flex flex-column align-items-start">
-                <div class="text-color-secondary font-bold">Folio</div>
-                <div class="text-xl font-bold text-primary">{{ folio.folio }}</div>
+@if (ticket) {
+    <div class="text-center surface-section  border-round border-1 surface-border p-4">
+        <div class="flex flex-wrap flex-row gap-3 justify-content-between border-bottom-2 mb-3 pb-4 border-dashed border-none surface-border">
+            <div class="flex flex-column align-items-start ">
+                <div class="text-color-secondary font-semibold">Folio</div>
+                <div class="text-xl font-bold text-primary text-left">{{ ticket.folio }}</div>
             </div>
             <div class="flex flex-column align-items-start">
-                <div class="text-color-secondary font-bold">Reporte</div>
-                <div class="text-xl font-semibold text-left">{{ folio.reporte }}</div>
+                <div class="text-color-secondary font-semibold">Reporte</div>
+                <div class="text-xl font-semibold text-left text-primary">{{ ticket.reporte }}</div>
             </div>
         </div>
-        <div class="px-3 m-4 py-3 surface-50 surface-border border-1 border-round font-semibold">
-            <div class="flex justify-content-between py-3 border-bottom-1 surface-border">
-                <div>Unidad</div>
-                {{ folio.unidad }}
-            </div>
-            <div class="flex justify-content-between py-3 border-bottom-1 surface-border">
-                <div>Área de seguimiento</div>
-                {{ folio.area }}
-            </div>
-            @if (folio.agente !== '') {
-                <div class="flex justify-content-between py-3 border-bottom-1 surface-border">
+        <div class="flex flex-column p-3 surface-50 surface-border border-1 border-round  pb-4">
+            @if (ticket.unidad && ticket.unidad.trim() !== '') {
+                <div class="flex justify-content-between border-bottom-1 surface-border align-items-center py-2">
+                    <div>Unidad</div>
+                    <div class="text-right">{{ ticket.unidad }}</div>
+                </div>
+            }
+            @if (ticket.area && ticket.area.trim() !== '') {
+                <div class="flex justify-content-between border-bottom-1 surface-border align-items-center py-2">
+                    <div>Área de seguimiento</div>
+                    <div class="text-right">{{ ticket.area }}</div>
+                </div>
+            }
+            @if (ticket.atiende && ticket.atiende.trim() !== '') {
+                <div class="flex justify-content-between border-bottom-1 surface-border align-items-center py-2">
                     <div>Atiende</div>
-                    {{ folio.agente }}
+                    <div class="text-right">{{ ticket.atiende }}</div>
                 </div>
             }
-            @if (folio.estado && folio.estado !== '') {
-                <div class="flex justify-content-between py-3 border-bottom-1 surface-border">
+            @if (ticket.estado && ticket.estado.trim() !== '') {
+                <div class="flex justify-content-between border-bottom-1 surface-border align-items-center py-2">
                     <div>Estado</div>
-                    <div class="reporte" [class]="'estado-'+folio.estado?.toLowerCase()"> {{ folio.estado }}</div>
+                    <div [ngClass]="ticket.estado.toLowerCase()" class="text-right estado">{{ ticket.estado }}</div>
                 </div>
             }
-            @if (folio.fecha && folio.fecha !== '') {
-                <div class="flex justify-content-between py-3">
+            @if (ticket.fecha && ticket.fecha.trim() !== '') {
+                <div class="flex justify-content-between border-bottom-1 surface-border align-items-center py-2">
                     <div>Fecha de registro</div>
-                    {{ folio.fecha }}
+                    <div class="text-right">{{ ticket.fecha }}</div>
                 </div>
             }
         </div>
-        @defer (when folio.nota && folio.nota !== '') {
-            @if (folio.nota && folio.nota !== '') {
-                <p-editor [readonly]="true" styleClass="my-3 m-4" [style]="{ height: '335px' }"
-                          ngModel="{{folio.nota}}">
+        @defer (when ticket.nota && ticket.nota !== '') {
+            @if (ticket.nota && ticket.nota !== '') {
+                <p-editor [readonly]="true" styleClass="my-3" [style]="{ height: '300px' }"
+                          ngModel="{{ticket.nota}}">
                     <ng-template pTemplate="header">
                         <div class="flex my-2"><i class="pi pi-ellipsis-v mx-2"></i>Detalles del reporte</div>
                     </ng-template>
                 </p-editor>
             }
-
         }
     </div>
-
 }

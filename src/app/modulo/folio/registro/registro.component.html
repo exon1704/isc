@@ -1,68 +1,87 @@
-@defer {<app-title-module color="bg-green-300" icon="nova onlyoffice" subtitulo="Inicie el proceso de registro de reportes o genere folios internos de seguimiento" titulo="Registrar reporte"></app-title-module>
-  @defer (when errorService.errors.size > 0; prefetch when errorService.errors.size > 0) {<app-error></app-error>}
-@if (errorService.errors.size == 0) {
-    <div class="p-toolbar p-2 mt-4">
-      <div class="p-toolbar-group-start">
-        <p-button #btnGenerales icon="pi pi-building" label="Generales" styleClass="mr-1" [text]="true" [plain]="true" [disabled]="!formReporte.get('unidad').value" (onClick)="abrirGenerales()"></p-button>
-        <p-button [disabled]="!formReporte.get('unidad').value" icon="pi pi-tags" [text]="true" [plain]="true" label="Seguimientos"></p-button>
-      </div>
-    </div>
-    <div class="border-round-md border-1 surface-border surface-section mt-2">
-      <form (ngSubmit)="registrar()" [formGroup]="formReporte" class="formgrid grid p-4">
-        <div class="field col-12 md:col-4">
-          <label class="font-semibold is-required">Unidad</label>
-          <p-dropdown [filterFields]="['clave','nombre']" [filter]="true" [options]="unidades" [showClear]="true" filterBy="clave,nombre" formControlName="unidad" optionLabel="nombre" styleClass="w-full">
-            <ng-template pTemplate="selectedItem">@if (formReporte.get('unidad')?.value) {<div>{{ formReporte.get('unidad')?.value.clave }} {{ formReporte.get('unidad')?.value.nombre }}</div>}</ng-template>
-            <ng-template let-unidad pTemplate="item"><div class="w-full"><div>{{ unidad["clave"] + " " + unidad["nombre"] }}</div></div></ng-template>
-          </p-dropdown>
+@defer {
+    <app-title-module color="bg-green-300" icon="nova onlyoffice"
+                      subtitulo="Inicie el proceso de registro de reportes o genere folios internos de seguimiento"
+                      titulo="Registrar reporte"></app-title-module>
+    @defer (when errorService.errors.size > 0; prefetch when errorService.errors.size > 0) {
+        <app-error></app-error>
+    }
+    @if (errorService.errors.size == 0) {
+        <div class="p-toolbar p-2 mt-4">
+            <div class="p-toolbar-group-start">
+                <button pButton #btnGenerales icon="pi pi-building" label="Generales" class="mr-1 button-default"
+                        [disabled]="!formReporte.get('unidad').value" (click)="abrirGenerales()"></button>
+            </div>
         </div>
-        <div class="field col-12 md:col-4"><label class="is-required font-semibold" for="area">Área de seguimiento</label><p-dropdown [options]="areas" [showClear]="true" formControlName="area" inputId="area" optionLabel="area.nombre" styleClass="w-full"></p-dropdown></div>
-        <div class="field col-12 md:col-4">
-          <label class="is-required font-semibold" for="reporte">Reporte</label>
-          <p-dropdown #cticket [filter]="true" [options]="reportes" [showClear]="true" filterBy="nombre" formControlName="reporte" inputId="reporte" optionLabel="nombre" styleClass="w-full"></p-dropdown>
-        </div>
-        <div class="field col-12 md:col-4">
-          <label class="is-required font-semibold" for="folio">Folio de seguimiento</label>
-          <p-inputGroup>
-            <input aria-describedby="folio" formControlName="folio" id="folio" pInputText
-                   required
-                   type="text"/>
-            <button (click)="generarFolio()" [disabled]="deshabilitarFolio" icon="pi pi-refresh" pButton
-                    type="button"></button>
-          </p-inputGroup>
-          @defer (when formReporte.get('folio').hasError('invalido')) {
-            @if (formReporte.get('folio').hasError('invalido')) {
-              <span class="p-error">El folio introducido ya se encuentra registrado</span>
-            }
-          }
-        </div>
-        <div class="field col-12 md:col-4">
-          <label class="font-semibold">Estado del reporte</label>
-          <p-dropdown
-            [options]="estados"
-            [showClear]="true"
-            formControlName="estado"
-            optionLabel="nombre"
-            styleClass="w-full">
-          </p-dropdown>
-        </div>
-        <div class="field col-12 md:col-4">
-          <label class="font-semibold" for="agente">Agente</label>
-          <input class="w-full" formControlName="agente" id="agente" pInputText type="text">
-        </div>
-        <div class="field col-12">
-          @defer (when activarDetalles) {
-            <label class="font-semibold">Detalles</label>
-            <p-editor
-              [style]="{ height: '320px' }" formControlName="detalles"
-              styleClass="m-0 p-0">
-              <ng-template pTemplate="header">
+        <div class="border-round-md border-1 surface-border surface-section mt-2">
+            <form (ngSubmit)="registrar()" [formGroup]="formReporte" class="formgrid grid p-4">
+                <div class="field col-12 md:col-4">
+                    <label class="font-semibold is-required">Unidad</label>
+                    <p-dropdown [filterFields]="['clave','nombre']" [filter]="true" [options]="unidades"
+                                [showClear]="true" filterBy="clave,nombre" formControlName="unidad" optionLabel="nombre"
+                                styleClass="w-full">
+                        <ng-template pTemplate="selectedItem">@if (formReporte.get('unidad')?.value) {
+                            <div>{{ formReporte.get('unidad')?.value.clave }} {{ formReporte.get('unidad')?.value.nombre }}</div>
+                        }</ng-template>
+                        <ng-template let-unidad pTemplate="item">
+                            <div class="w-full">
+                                <div>{{ unidad["clave"] + " " + unidad["nombre"] }}</div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+                <div class="field col-12 md:col-4"><label class="is-required font-semibold" for="area">Área de
+                    seguimiento</label>
+                    <p-dropdown [options]="areas" [showClear]="true" formControlName="area" inputId="area"
+                                optionLabel="area.nombre" styleClass="w-full"></p-dropdown>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <label class="is-required font-semibold" for="reporte">Reporte</label>
+                    <p-dropdown #cticket [filter]="true" [options]="reportes" [showClear]="true" filterBy="nombre"
+                                formControlName="reporte" inputId="reporte" optionLabel="nombre"
+                                styleClass="w-full"></p-dropdown>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <label class="is-required font-semibold" for="folio">Folio de seguimiento</label>
+                    <p-inputGroup>
+                        <input aria-describedby="folio" formControlName="folio" id="folio" pInputText
+                               required
+                               type="text"/>
+                        <button (click)="generarFolio()" [disabled]="deshabilitarFolio" icon="pi pi-refresh" pButton
+                                type="button"></button>
+                    </p-inputGroup>
+                    @defer (when formReporte.get('folio').hasError('invalido')) {
+                        @if (formReporte.get('folio').hasError('invalido')) {
+                            <span class="p-error">El folio introducido ya se encuentra registrado</span>
+                        }
+                    }
+                </div>
+                <div class="field col-12 md:col-4">
+                    <label class="font-semibold">Estado del reporte</label>
+                    <p-dropdown
+                            [options]="estados"
+                            [showClear]="true"
+                            formControlName="estado"
+                            optionLabel="nombre"
+                            styleClass="w-full">
+                    </p-dropdown>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <label class="font-semibold" for="agente">Agente</label>
+                    <input class="w-full" formControlName="agente" id="agente" pInputText type="text">
+                </div>
+                <div class="field col-12">
+                    @defer (when activarDetalles) {
+                        <label class="font-semibold">Detalles</label>
+                        <p-editor
+                                [style]="{ height: '320px' }" formControlName="detalles"
+                                styleClass="m-0 p-0">
+                            <ng-template pTemplate="header">
               <span class="ql-formats">
                   <button type="button" class="ql-bold" aria-label="Bold"></button>
                   <button type="button" class="ql-italic" aria-label="Italic"></button>
                   <button type="button" class="ql-underline" aria-label="Underline"></button>
               </span>
-                <span class="ql-formats">
+                                <span class="ql-formats">
                     <button class="ql-list" value="ordered"></button>
                     <button class="ql-list" value="bullet"></button>
                   <select title="Text Alignment" class="ql-align">
@@ -72,48 +91,54 @@
                     <option value="justify" label="Justify"></option>
                   </select>
                 </span>
-                <span class="ql-formats">
+                                <span class="ql-formats">
                   <button aria-label="Link" class="ql-link"></button>
                   <button aria-label="Image" class="ql-image"></button>
                 </span>
-              </ng-template>
-            </p-editor>
-          } @placeholder {
-            <div class="flex align-items-center gap-2">
-              <div class="p-checkbox ">
-                <div class="p-checkbox-box" (click)="activarDetalles=true">
-                  <div class="p-checkbox-icon"></div>
+                            </ng-template>
+                        </p-editor>
+                    } @placeholder {
+                        <div class="flex align-items-center gap-2">
+                            <div class="p-checkbox ">
+                                <div class="p-checkbox-box" (click)="activarDetalles=true">
+                                    <div class="p-checkbox-icon"></div>
+                                </div>
+                            </div>
+                            <label class="p-checkbox-label font-semibold">Agregar detalles</label>
+                        </div>
+                    }
                 </div>
-              </div>
-              <label class="p-checkbox-label font-semibold">Agregar detalles</label>
-            </div>
-          }
+                <div class="col-12 flex align-items-center justify-content-center gap-2">
+                    <button class="p-button-secondary p-button-outlined" label="Cancelar" pButton
+                            routerLink="/folio"></button>
+                    <button [disabled]="formReporte.invalid" label="Registrar" pButton type="submit"></button>
+                </div>
+            </form>
+            @defer (when visibleDialog; prefetch on interaction(cticket)) {
+                <p-dialog [(visible)]="visibleDialog" [breakpoints]="{ '575px': '90vw' }"
+                          [draggable]="false"
+                          header="Proceso completado"
+                          [resizable]="false"
+                          [style]="{ width: '38rem' }" modal="true">
+                    <app-ticket [ticket]="ticket"></app-ticket>
+                    <ng-template pTemplate="footer">
+                        <div class="flex justify-content-center">
+                            <button (click)="visibleDialog = false" label="Aceptar" pButton></button>
+                        </div>
+                    </ng-template>
+                </p-dialog>
+            }
         </div>
-        <div class="col-12 flex align-items-center justify-content-center gap-2">
-          <button class="p-button-secondary p-button-outlined" label="Cancelar" pButton
-                  routerLink="/folio"></button>
-          <button [disabled]="formReporte.invalid" label="Registrar" pButton type="submit"></button>
-        </div>
-      </form>
-      @defer (when visibleDialog; prefetch on interaction(cticket)) {
-        <p-dialog [(visible)]="visibleDialog" [breakpoints]="{ '575px': '90vw' }"
-                  [draggable]="false"
-                  header="Proceso completado"
-                  [resizable]="false"
-                  [style]="{ width: '38rem' }" modal="true">
-          <app-ticket [folio]="folio"></app-ticket>
-          <ng-template pTemplate="footer">
-            <div class="flex justify-content-center">
-              <button (click)="visibleDialog = false" label="Aceptar" pButton></button>
-            </div>
-          </ng-template>
-        </p-dialog>
-      }
-    </div>
-    @defer (when activarGenerales; prefetch on interaction(btnGenerales)) {
-      <p-dialog header="Generales" [(visible)]="activarGenerales" [style]="{width: '50vw'}" [breakpoints]="{ '680px': '90vw','1024':'70wv' }" [draggable]="false" [resizable]="false" [modal]="true"><app-contacto [generales]="generales"></app-contacto></p-dialog>
+        @defer (when activarGenerales; prefetch on interaction(btnGenerales)) {
+            <p-dialog header="Generales" [(visible)]="activarGenerales" [style]="{width: '50vw'}"
+                      [breakpoints]="{ '680px': '90vw','1024':'70wv' }" [draggable]="false" [resizable]="false"
+                      [modal]="true">
+                <app-contacto [generales]="generales"></app-contacto>
+            </p-dialog>
+        }
     }
-  }
 } @loading {
-  <div class="preloader"><div class="preloader-content"></div></div>
+    <div class="preloader">
+        <div class="preloader-content"></div>
+    </div>
 }

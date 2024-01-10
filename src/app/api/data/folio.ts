@@ -1,23 +1,18 @@
 export interface Folio {
-  id?: number;
-  reporte?: {
-    id?: number;
-    nombre?: string;
-    area?: {
-      id?: number;
-      nombre?: string
-    }
-  };
-  estado?: {
-    id?: number;
-    nombre?: string
-  };
-  fecha?: string;
-  folio?: string;
-  agente?: string;
-  unidad?: {
-    id?: number;
-    nombre?: string;
-    clave?: string
-  }
+   id?: number;
+   reporte?: {
+      id?: number; nombre?: string; area?: {
+         id?: number; nombre?: string
+      }
+   };
+   estado?: {
+      id?: number; nombre?: string
+   };
+   fecha?: string;
+   folio?: string;
+   agente?: string;
+   nota?: string;
+   unidad?: {
+      id?: number; nombre?: string; clave?: string
+   }
 }

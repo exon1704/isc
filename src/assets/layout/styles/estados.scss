@@ -1,26 +1,19 @@
-.reporte {
+.estado {
   border-radius: var(--border-radius);
   padding: .25em .5rem;
   font-size:12px;
-}
-.reporte {
-  &.estado-abierto {
+  &.abierto {
     background-color: var(--green-500);
     color: white;
   }
 
-  &.estado-cerrado {
+  &.cerrado {
     background-color: var(--primary-color);
     color: var(--primary-color-text);
   }
 
-  &.estado-pendiente {
+  &.pendiente {
     background-color: var(--gray-300);
     color: black;
-  }
-
-  &.estado-cancelado {
-    background-color: var(--red-600);
-    color: var(--primary-color-text);
   }
 }
