@@ -1,12 +1,10 @@
 import {ButtonModule} from "primeng/button";
-import {Router, RouterLink} from "@angular/router";
 import {Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {DatePipe, NgClass} from "@angular/common";
 import {Header} from "@isc/core/widgets/title/header";
 import {ErrorComponent} from "@isc/core/widgets/error/error.component";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
-import {MenuItem, SharedModule} from "primeng/api";
 import {CalendarModule} from "primeng/calendar";
 import {InputGroupModule} from "primeng/inputgroup";
 import {InputTextModule} from "primeng/inputtext";
@@ -24,10 +22,12 @@ import {FolioService} from "@isc/api/folio.service";
 import {AreaService} from "@isc/api/area.service";
 import {Subscription} from "rxjs";
 import {FiltroFolio} from "@isc/core/commons/filtro-folio";
-import {SplitButtonModule} from "primeng/splitbutton";
-import {TicketData} from "@isc/core/ticket/ticket.data";
-import {TicketComponent} from "@isc/core/ticket/ticket.component";
 import {SidebarModule} from "primeng/sidebar";
+import {TicketComponent} from "@isc/core/ticket/ticket.component";
+import {Ticket} from "@isc/core/commons/ticket";
+import {FolioUtils} from "@isc/core/commons/folio-utils";
+import {RouterLink} from "@angular/router";
+import {Paginator} from "@isc/core/commons/paginator";
 
 @Component({
    providers: [DatePipe],
@@ -35,26 +35,29 @@ import {SidebarModule} from "primeng/sidebar";
    templateUrl: './administrar.component.html',
    styleUrl: './administrar.component.scss',
    standalone: true,
-   imports: [Header, ErrorComponent, ButtonModule, RouterLink, ReactiveFormsModule, DropdownModule, SharedModule, NgClass, CalendarModule, InputGroupModule, InputTextModule, TableModule, PaginatorModule, SplitButtonModule, TicketComponent, SidebarModule]
+   imports: [Header, ErrorComponent, ButtonModule, ReactiveFormsModule, DropdownModule, NgClass, CalendarModule, InputGroupModule, InputTextModule, TableModule, PaginatorModule, SidebarModule, TicketComponent, RouterLink]
 })
 export class AdministrarComponent implements OnInit, OnDestroy {
-   @ViewChild('inFiltro') filter!: ElementRef;
-   paginador = {
-      first: 0, rows: 100, page: 0, totalElements: 0, pageCount: 0
-   }
-   protected generales: TicketData
-   // Formularios
-   formFiltro!: FormGroup
-   formFecha!: FormGroup
-   formFolio!: FormGroup
-   //Variable de datos
-   unidades!: Unidad[]
-   areas!: Area[]
-   estados!: Estado[]
-   folios: Folio[];
+   @ViewChild('inputFiltro') inputFiltro!: ElementRef;
+   protected paginador: Paginator = {
 
-   cargandoTabla: boolean = true;
-   panelFiltro: boolean = false
+      first: 0, rows: 50, page: 0, totalElements: 0, pageCount: 0
+   }
+
+   // Formularios
+   protected formFiltro!: FormGroup
+   protected formFecha!: FormGroup
+   protected formFolio!: FormGroup
+   //Variable de datos
+   protected unidades!: Unidad[]
+   protected areas!: Area[]
+   protected estados!: Estado[]
+   protected folios: Folio[];
+
+   protected cargandoTabla: boolean = true;
+   protected activarFiltro: boolean = false
+   protected activarDetalleFolio: boolean;
+   protected ticketSeleccionado: Ticket;
    protected errorService = inject(ErrorService);
    // Subscriptores y observables
    private adminHandlerService = inject(AdministrarHandlerService)
@@ -66,24 +69,14 @@ export class AdministrarComponent implements OnInit, OnDestroy {
    private unidadSubscription: Subscription
    private estadoSubscription: Subscription
    private folioSubscription: Subscription
-   private mes: Date;
+   private mesConsulta: Date;
 
-   items: MenuItem[];
-   activarDetalleFolio: boolean;
-
-   constructor(private builder: FormBuilder, private datePipe: DatePipe, private router: Router) {
-      this.items = [{
-         label: 'Seguimiento',
-         icon: 'pi pi-file-edit',
-         command: () => {
-            console.log('Seguimiento')
-         }
-      }];
+   constructor(private builder: FormBuilder, private datePipe: DatePipe) {
       this.asignarMesConsulta()
-      this.formFecha = this.builder.group({fecha: [this.mes, Validators.required]})
+      this.formFecha = this.builder.group({fecha: [this.mesConsulta, Validators.required]})
       this.formFolio = this.builder.group({folio: ['', Validators.required]})
       this.formFiltro = this.builder.group({unidad: null, estado: null, area: null})
-      this.obtenerFoliosPorFiltro();
+      this.consultarFoliosPorFiltro();
       this.obtenerAreas()
       this.obtenerUnidades()
       this.obtenerEstados()
@@ -102,7 +95,7 @@ export class AdministrarComponent implements OnInit, OnDestroy {
 
    asignarMesConsulta() {
       let fecha = new Date()
-      this.mes = new Date(fecha.getFullYear(), fecha.getMonth(), 1)
+      this.mesConsulta = new Date(fecha.getFullYear(), fecha.getMonth(), 1)
    }
 
    generarFiltro() {
@@ -123,52 +116,41 @@ export class AdministrarComponent implements OnInit, OnDestroy {
       return data
    }
 
-   evtFiltrar() {
-      this.panelFiltro = !this.panelFiltro
+   evtEstadoFiltro() {
+      this.activarFiltro = !this.activarFiltro
       this.formFiltro.reset()
    }
 
-   resetTabla(dt: Table) {
-      this.filter.nativeElement.value = '';
+   refreshTablaFolio(dt: Table) {
+      this.inputFiltro.nativeElement.value = '';
       dt.clear()
       this.formFolio.reset()
-      this.obtenerFoliosPorFiltro()
+      this.consultarFoliosPorFiltro()
    }
 
-   editar(data: string) {
-      this.folioSubscription = this.folioService.obtenerDetalles(data).subscribe(
-         {
-            next: r => {
-               this.generales = {
-                  folio: r.data.folio,
-                  reporte: r.data.reporte.nombre,
-                  unidad: r.data.unidad.clave + ' ' + r.data.unidad.nombre,
-                  area: r.data.reporte.area.nombre,
-                  agente: r.data.agente == null ? '' : r.data.agente,
-                  nota: r.data.nota,
-                  fecha: r.data.fecha,
-                  estado: r.data.estado.nombre
-               }
-               this.activarDetalleFolio = true
-            }
+   mostrarTicket(data: string) {
+      this.folioSubscription = this.folioService.obtenerDetalles(data).subscribe({
+         next: r => {
+            this.ticketSeleccionado = FolioUtils.convertirFolioTicket(r.data)
+            this.activarDetalleFolio = true
          }
-      )
+      })
    }
 
    eliminar(data: any) {
 
    }
 
-   onPageChange(event) {
+   onPageChange(event: any) {
       this.paginador.first = event.first;
       this.paginador.page = event.page
       this.paginador.rows = event.rows;
-      this.obtenerFoliosPorFiltro()
+      this.consultarFoliosPorFiltro()
    }
 
-   evtFiltro() {
+   evtConsultarFiltro() {
       this.resetPaginador()
-      this.obtenerFoliosPorFiltro()
+      this.consultarFoliosPorFiltro()
    }
 
    resetPaginador() {
@@ -178,7 +160,13 @@ export class AdministrarComponent implements OnInit, OnDestroy {
       this.paginador.pageCount = 0
    }
 
-   protected obtenerFolio() {
+   evtBtnResetTabla() {
+      this.formFiltro.reset()
+      this.resetPaginador()
+      this.consultarFoliosPorFiltro()
+   }
+
+   protected consultarFolio() {
       this.cargandoTabla = true
       this.folioService.obtenerPorFolio(this.formFolio?.get('folio')?.value).subscribe({
          next: value => {
@@ -191,7 +179,7 @@ export class AdministrarComponent implements OnInit, OnDestroy {
                this.paginador.totalElements = 1
             }
             console.log(value)
-         }, error: err => {
+         }, error: () => {
             this.cargandoTabla = false
             this.resetPaginador()
             this.folios = []
@@ -201,7 +189,7 @@ export class AdministrarComponent implements OnInit, OnDestroy {
       })
    }
 
-   protected obtenerFoliosPorFiltro() {
+   protected consultarFoliosPorFiltro() {
       this.cargandoTabla = true
       this.folioSubscription = this.folioService.obtenerFolios(this.generarFiltro()).subscribe({
          next: value => {
@@ -221,11 +209,6 @@ export class AdministrarComponent implements OnInit, OnDestroy {
             this.cargandoTabla = false
          }
       })
-   }
-
-   protected resetFiltro() {
-      this.formFiltro.reset()
-      this.obtenerFoliosPorFiltro()
    }
 
    private obtenerAreas() {
@@ -250,9 +233,5 @@ export class AdministrarComponent implements OnInit, OnDestroy {
             this.adminHandlerService.httpHandlerServiceError(err, 'Estados de operación', true);
          }
       });
-   }
-
-   nuevoFolio() {
-      this.router.navigate(['/registrar']);
    }
 }

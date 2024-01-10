@@ -10,19 +10,19 @@
 } @else {
     <div class="p-toolbar p-2 mt-4">
         <div class="p-toolbar-group-start">
-            <p-splitButton label="Nuevo" icon="pi pi-plus" (onClick)="nuevoFolio()" [model]="items"></p-splitButton>
-            <button pButton (click)=evtFiltrar()
-                    [icon]="panelFiltro?'pi pi-filter-slash':'pi pi-filter'"
+            <button pButton label="Nuevo" icon="pi pi-plus" routerLink="/registrar"></button>
+            <button pButton (click)=evtEstadoFiltro()
+                    [icon]="activarFiltro?'pi pi-filter-slash':'pi pi-filter'"
                     label="Filtrar"
                     class="p-button-text p-button-secondary ml-2">
             </button>
         </div>
     </div>
     <div class="mt-2 flex flex-column  md:flex-row gap-2">
-        @if (panelFiltro) {
+        @if (activarFiltro) {
             <div class="md:col col-12 border-round-xl border-1 surface-border surface-section p-3">
                 <h6>Filtro de consulta</h6>
-                <form (ngSubmit)="evtFiltro()" [formGroup]="formFiltro" class="formgrid grid">
+                <form (ngSubmit)="evtConsultarFiltro()" [formGroup]="formFiltro" class="formgrid grid">
                     <!--Unidad-->
                     <div class="field col-12">
                         <label>Unidad</label>
@@ -68,19 +68,19 @@
                         </p-dropdown>
                     </div>
                     <div class="field col-12 flex justify-content-center gap-2">
-                        <p-button (onClick)="obtenerFoliosPorFiltro()" label="Aplicar"></p-button>
-                        <p-button (onClick)="resetFiltro()" [outlined]="true" icon="pi pi-eraser"
-                                  severity="secondary"></p-button>
+                        <button pButton (click)="consultarFoliosPorFiltro()" label="Aplicar"></button>
+                        <button pButton (click)="evtBtnResetTabla()" class="p-button-outlined"
+                                icon="pi pi-eraser"></button>
                     </div>
                 </form>
             </div>
         }
-        <div [ngClass]="{'md:col-9':panelFiltro}"
+        <div [ngClass]="{'md:col-9':activarFiltro}"
              class="col-12 border-round-xl border-1 surface-border surface-section p-3">
             <div class="flex mb-4 align-items-center gap-2">
-                <form (ngSubmit)="obtenerFoliosPorFiltro()" [formGroup]="formFecha">
+                <form (ngSubmit)="consultarFoliosPorFiltro()" [formGroup]="formFecha">
                     <p-calendar
-                            (onSelect)="obtenerFoliosPorFiltro()"
+                            (onSelect)="consultarFoliosPorFiltro()"
                             [showIcon]="true"
                             dateFormat="dd/mm/yy"
                             formControlName="fecha"
@@ -88,7 +88,7 @@
                             styleClass="w-11rem">
                     </p-calendar>
                 </form>
-                <form (ngSubmit)="obtenerFolio()" [formGroup]="formFolio" class="ml-auto">
+                <form (ngSubmit)="consultarFolio()" [formGroup]="formFolio" class="ml-auto">
                     <p-inputGroup>
                         <input class="" formControlName="folio" id="folio" pInputText placeholder="Consultar folio"
                                type="text"/>
@@ -110,12 +110,12 @@
                 <ng-template pTemplate="caption">
                     <div class="flex justify-content-between row gap-2">
                   <span class="p-input-icon-left"><i class="pi pi-search"></i>
-                        <input #inFiltro (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                        <input #inputFiltro (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                                class="w-13rem"
                                pInputText placeholder="Buscar en resultado" type="text"/>
                     </span>
-                        <p-button (click)="resetTabla(dt)" [outlined]="true" icon="pi pi-replay"></p-button>
-
+                        <button pButton (click)="refreshTablaFolio(dt)" class="p-button-outlined"
+                                icon="pi pi-replay"></button>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
@@ -147,17 +147,17 @@
                             </div>
                         </td>
                         <td>
-                            <span [class]="'estado-'+data.estado.nombre?.toLowerCase()"
-                                  class="font-semibold reporte">{{ data.estado.nombre }}</span>
+                            <span [class]="data.estado.nombre?.toLowerCase()"
+                                  class="font-semibold estado">{{ data.estado.nombre }}</span>
                         </td>
                         <td>{{ data.reporte.area.nombre }}</td>
                         <td>{{ data.unidad.clave + ' ' + data.unidad.nombre }}</td>
                         <td>{{ data.fecha }}</td>
                         <td>
                             <div class="flex gap-2">
-                                <button pButton class="p-button-secondary" (click)="editar(data.folio)"
+                                <button pButton class="p-button-secondary" (click)="mostrarTicket(data.folio)"
                                         icon="pi pi-file"></button>
-                                <button pButton class="p-button-warning" (click)="eliminar(data)"
+                                <button pButton (click)="eliminar(data)"
                                         icon="pi pi-trash"></button>
                             </div>
                         </td>
@@ -197,11 +197,11 @@
     <p-sidebar [(visible)]="activarDetalleFolio" position="right" styleClass="w-30rem">
         <ng-template pTemplate="header">
             <div class="flex gap-1">
-                <button pButton  class="button-default" icon="pi pi-history"></button>
+                <button pButton class="button-default" icon="pi pi-history"></button>
                 <button pButton class="button-default" icon="pi pi-pencil"></button>
                 <button pButton label="Cerrar folio" icon="pi pi-minus-circle"></button>
             </div>
         </ng-template>
-        <app-ticket [folio]="generales"></app-ticket>
+        <app-ticket [ticket]="ticketSeleccionado"></app-ticket>
     </p-sidebar>
 }
