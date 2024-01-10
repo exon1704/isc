@@ -93,7 +93,7 @@ export class RegistroComponent implements OnInit, OnDestroy {
       if (this.formReporte.invalid) {
          this.formReporte.markAllAsTouched()
       } else {
-         const data = FolioUtils.construirDataFolio(accion.Registrar, this.formReporte.value, null)
+         const data = FolioUtils.construirDataFolio(accion.REGISTRAR, this.formReporte.value, null)
          this.folioSubscription = this.folioService.registrar(data).subscribe({
             next: value => {
                if (value.code == 200) {
