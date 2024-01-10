@@ -1,7 +1,7 @@
 @defer (on viewport; prefetch on viewport) {
     <app-title-module color="bg-green-300" icon="nova onlyoffice"
-                      subtitulo="Inicie el proceso de registro de reportes o genere folios internos de seguimiento"
-                      titulo="Registrar reporte"></app-title-module>
+                      subtitulo="Inicie el proceso de registro de tickets o genere folios internos de seguimiento"
+                      titulo="Registrar Ticket"></app-title-module>
     @defer (when errorService.errors.size > 0; prefetch when errorService.errors.size > 0) {
         <app-error></app-error>
     }
