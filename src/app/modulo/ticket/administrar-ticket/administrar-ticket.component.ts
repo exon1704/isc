@@ -1,43 +1,44 @@
+import {Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ButtonModule} from "primeng/button";
-import {Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {DatePipe, NgClass} from "@angular/common";
-import {Header} from "@isc/core/widgets/title/header";
-import {ErrorComponent} from "@isc/core/widgets/error/error.component";
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {DropdownModule} from "primeng/dropdown";
 import {CalendarModule} from "primeng/calendar";
+import {DropdownModule} from "primeng/dropdown";
+import {ErrorComponent} from "@isc/core/error/error.component";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Header} from "@isc/core/title/header";
 import {InputGroupModule} from "primeng/inputgroup";
 import {InputTextModule} from "primeng/inputtext";
-import {Table, TableModule} from "primeng/table";
 import {PaginatorModule} from "primeng/paginator";
-import {ErrorService} from "@isc/core/widgets/error/error.service";
-import {UnidadService} from "@isc/api/unidad.service";
+import {RouterLink} from "@angular/router";
+import {SharedModule} from "primeng/api";
+import {SidebarModule} from "primeng/sidebar";
+import {Table, TableModule} from "primeng/table";
+import {TicketComponent} from "@isc/core/ticket/ticket.component";
+import {Paginator} from "@isc/core/commons/paginator";
 import {Unidad} from "@isc/api/unidad";
 import {Area} from "@isc/api/area";
 import {Estado} from "@isc/api/estado";
 import {Folio} from "@isc/api/folio";
-import {AdministrarHandlerService} from "@isc/modulo/service/administrar-handler.service";
+import {Ticket} from "@isc/core/commons/ticket";
+import {ErrorService} from "@isc/core/error/error.service";
+import {AdministrarHandlerService} from "@isc/core/commons/administrar-handler.service";
+import {UnidadService} from "@isc/api/unidad.service";
 import {EstadoService} from "@isc/api/estado.service";
 import {FolioService} from "@isc/api/folio.service";
 import {AreaService} from "@isc/api/area.service";
 import {Subscription} from "rxjs";
+import {DatePipe, NgClass} from "@angular/common";
 import {FiltroFolio} from "@isc/core/commons/filtro-folio";
-import {SidebarModule} from "primeng/sidebar";
-import {TicketComponent} from "@isc/core/ticket/ticket.component";
-import {Ticket} from "@isc/core/commons/ticket";
 import {FolioUtils} from "@isc/core/commons/folio-utils";
-import {RouterLink} from "@angular/router";
-import {Paginator} from "@isc/core/commons/paginator";
 
 @Component({
-   providers: [DatePipe],
-   selector: 'app-administrar',
-   templateUrl: './administrar.component.html',
-   styleUrl: './administrar.component.scss',
+   selector: 'app-administrar-ticket',
    standalone: true,
-   imports: [Header, ErrorComponent, ButtonModule, ReactiveFormsModule, DropdownModule, NgClass, CalendarModule, InputGroupModule, InputTextModule, TableModule, PaginatorModule, SidebarModule, TicketComponent, RouterLink]
+   imports: [ButtonModule, CalendarModule, DropdownModule, ErrorComponent, FormsModule, Header, InputGroupModule, InputTextModule, PaginatorModule, ReactiveFormsModule, RouterLink, SharedModule, SidebarModule, TableModule, TicketComponent, NgClass],
+   templateUrl: './administrar-ticket.component.html',
+   providers: [DatePipe],
+   styleUrl: './administrar-ticket.component.scss'
 })
-export class AdministrarComponent implements OnInit, OnDestroy {
+export class AdministrarTicketComponent implements OnInit, OnDestroy {
    @ViewChild('inputFiltro') inputFiltro!: ElementRef;
    protected paginador: Paginator = {
 
@@ -235,3 +236,4 @@ export class AdministrarComponent implements OnInit, OnDestroy {
       });
    }
 }
+

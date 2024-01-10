@@ -1,17 +1,16 @@
-import {NotfoundComponent} from "@isc/modulo/notfound.component";
 import {NgModule} from "@angular/core";
 import {NoPreloading, RouterModule} from "@angular/router";
 import {AppLayoutComponent} from "@isc/layout/app.layout.component";
 
 @NgModule({
    imports: [RouterModule.forRoot([{
-      path: '',
-      component: AppLayoutComponent,
-      children: [
-         {path: 'folio', loadChildren: () => import("@isc/modulo/administrar.module").then(m => m.AdministrarModule)},
-         {path: 'registrar', loadChildren: () => import("@isc/modulo/registro.module").then(m => m.RegistroModule)},
-      ]
-   }, {path: 'notfound', component: NotfoundComponent}, {
+      path: '', component: AppLayoutComponent, children: [{
+         path: 'ticket', loadChildren: () => import("@isc/modulo/ticket/ticket.router").then(r => r.TicketRouter)
+      },]
+   }, {
+      path: 'notfound',
+      loadComponent: () => import("@isc/modulo/notfound/notfound.component").then(c => c.NotfoundComponent)
+   }, {
       path: '**', redirectTo: '/notfound'
    },], {
       useHash: true,

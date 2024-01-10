@@ -40,7 +40,7 @@ export class FolioUtils {
          nota: dataForm.detalles,
          reporte: dataForm.reporte,
          unidad: dataForm.unidad,
-         id: accion.ACTUALIZAR ? folio.id : 0
+         id: accion.REGISTRAR ? 0 : folio.id
       };
    }
 }

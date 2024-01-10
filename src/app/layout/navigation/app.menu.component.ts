@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AppMenuitemComponent} from "@isc/layout/app.menuitem.component";
 import {NgFor, NgIf} from "@angular/common";
 import {LayoutService} from "@isc/layout/app.layout.service";
-import {AppMenu} from "@isc/core/app-menu";
+import {AppMenu} from "@isc/modulo/app-menu";
 
 @Component({
   selector: 'app-menu', templateUrl: './app.menu.component.html',

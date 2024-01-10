@@ -1,4 +1,4 @@
-@defer {
+@defer (on viewport; prefetch on viewport) {
     <app-title-module color="bg-green-300" icon="nova onlyoffice"
                       subtitulo="Inicie el proceso de registro de reportes o genere folios internos de seguimiento"
                       titulo="Registrar reporte"></app-title-module>
@@ -110,7 +110,7 @@
                 </div>
                 <div class="col-12 flex align-items-center justify-content-center gap-2">
                     <button class="p-button-secondary p-button-outlined" label="Cancelar" pButton
-                            routerLink="/folio"></button>
+                            routerLink="/ticket"></button>
                     <button [disabled]="formReporte.invalid" label="Registrar" pButton type="submit"></button>
                 </div>
             </form>
@@ -141,4 +141,6 @@
     <div class="preloader">
         <div class="preloader-content"></div>
     </div>
+} @placeholder {
+    <h1></h1>
 }
